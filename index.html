@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- 1. 제목 수정 -->
     <title>에겐/테토 성향 테스트</title>
     <meta name="description" content="나의 에겐/테토 성향과 숨겨진 궁합을 알아보세요! 144가지 조합의 정밀 분석과 나만의 결과 이미지까지.">
     <meta property="og:title" content="에겐/테토 성향 테스트">
@@ -98,10 +97,13 @@
         }
         .screen::-webkit-scrollbar { display: none; }
         .screen.hidden { opacity: 0; pointer-events: none; transform: scale(0.98); z-index: -1; }
+        
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-10px); } }
+
         .screen.active { animation: fadeIn 0.4s forwards; z-index: 10; }
         .screen.inactive { animation: fadeOut 0.4s forwards; }
+        
         .header { position: absolute; top: 0; left: 0; width: 100%; padding: 1rem 1.5rem; z-index: 100; }
         .header-top { display: flex; justify-content: space-between; align-items: center; height: 36px; }
         #question-counter { font-size: 0.9rem; color: var(--c-text-light); font-weight: 500;}
@@ -109,6 +111,7 @@
         #progress-container { width: 100%; background: var(--c-border); border-radius: 20px; height: 10px; overflow: hidden; margin-top: 0.5rem; }
         #progress-container.hidden { display: none; }
         #progress-bar { width: 0%; height: 100%; background: var(--c-primary); border-radius: 20px; transition: width 0.4s ease; }
+        
         #settings-modal {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); z-index: 1001;
@@ -128,6 +131,7 @@
         #theme-options .theme-option { width: 36px; height: 36px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; }
         #theme-options .theme-option.selected { border-color: var(--c-accent); }
         #lang-switcher .lang-btn { flex-grow: 1; }
+
         h1, h2 { font-family: var(--font-title); }
         h1 { font-size: 2.2rem; color: var(--c-primary); margin-bottom: 0.5rem; }
         p { font-size: 1rem; line-height: 1.6; color: var(--c-text-light); }
@@ -142,6 +146,7 @@
         .main-btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 6px 20px color-mix(in srgb, var(--c-primary), transparent 50%); }
         .main-btn:disabled { background: var(--c-border); color: var(--c-text-light); cursor: not-allowed; box-shadow: none; transform: none;}
         .main-btn.secondary { background: transparent; border: 1px solid var(--c-primary); color: var(--c-primary); box-shadow: none; }
+        
         #user-info-screen { justify-content: center; gap: 1.2rem; padding-top: 4rem;}
         .form-group { width: 100%; text-align: left; }
         .form-group label { display: block; font-weight: 500; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--c-text-light); }
@@ -157,6 +162,7 @@
             transition: all var(--transition-speed);
         }
         .choice-btn.selected { background: var(--c-primary); color: white; border-color: var(--c-primary); font-weight: bold; }
+        
         #test-screen { padding-top: 6rem; justify-content: space-between; }
         .question-content { margin-top: 1rem; }
         #question-category { font-size: 0.9rem; color: var(--c-primary); font-weight: 500; margin-bottom: 0.5rem; height: 1.2em; }
@@ -173,6 +179,7 @@
         .test-footer { display: flex; justify-content: flex-start; width: 100%; margin-top: 1.5rem; }
         .nav-btn { padding: 0.7rem 1.5rem; background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 10px; font-weight: 500; cursor: pointer; }
         .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
         #loading-screen { justify-content: center; align-items: center; }
         .spinner {
             width: 60px; height: 60px; border: 5px solid var(--c-border);
@@ -180,6 +187,7 @@
             animation: spin 1s linear infinite; margin-bottom: 1rem;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
+        
         #result-screen { padding-bottom: 2rem; justify-content: flex-start; padding-top: 4rem; }
         .result-main-visual {
             background: var(--c-bg); border-radius: var(--border-radius-lg); padding: 1.5rem;
@@ -194,6 +202,7 @@
         #result-title { font-size: 2rem; color: var(--c-primary); }
         #result-subtitle-text { font-size: 1.1rem; }
         #score-chart-container { width: 100%; max-width: 250px; margin: 1rem auto; }
+        
         #result-description { font-size: 0.95rem; text-align: left; margin-bottom: 1.5rem; white-space: pre-wrap; }
         .result-section { margin-bottom: 1.5rem; }
         .result-section h3 { font-family: var(--font-title); font-size: 1.2rem; color: var(--c-primary); margin-bottom: 0.75rem; text-align: left; border-left: 4px solid var(--c-accent); padding-left: 0.5rem; }
@@ -206,6 +215,7 @@
         .compat-card .score { font-family: var(--font-title); font-size: 1.8rem; }
         .compat-card.best .score { color: #2ecc71; }
         .compat-card.worst .score { color: #e74c3c; }
+
         .result-actions { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; }
         .result-actions .main-btn, .result-actions .main-btn.secondary { width: 100%; }
         #share-buttons { display: flex; justify-content: center; gap: 1rem; }
@@ -213,6 +223,7 @@
         .share-btn:hover { transform: scale(1.1); }
         #kakao-share-btn { background-color: #FEE500; color: #3A1D1D; }
         #twitter-share-btn { background-color: #1DA1F2; color: white; }
+        
         #history-screen { justify-content: flex-start; padding-top: 4rem; }
         #history-list { width: 100%; display: flex; flex-direction: column; gap: 1rem; }
         .history-item { background: var(--c-bg); padding: 1rem; border-radius: var(--border-radius-md); text-align: left; display: flex; justify-content: space-between; align-items: center; }
@@ -220,12 +231,14 @@
         .history-info .date { font-size: 0.8rem; color: var(--c-text-light); }
         .history-compare { width: 100%; margin-top: 1.5rem; }
         #history-chart-container { width: 100%; }
+        
         @media (max-width: 500px) {
             body { background: var(--c-surface); }
             #app { border-radius: 0; max-height: none; height: 100vh; box-shadow: none; }
             .screen { padding-top: 6rem; }
             #user-info-screen, #history-screen, #result-screen { padding-top: 4rem; }
         }
+
         .toast {
             position: fixed; bottom: 2rem; left: 50%;
             transform: translateX(-50%);
@@ -410,7 +423,7 @@
     </div>
 
 <script>
-// ... (DATA 객체는 이전과 동일하므로 생략) ...
+// ... (DATA 객체는 이전 답변과 동일하여 생략합니다)
 const DATA = {
     questions: [
         { category: "emotion", q: { ko: "친구가 고민 상담을 요청했을 때 나는?", en: "When a friend asks for advice, I...", ja: "友達が悩み相談をしてきた時、私は？", zh: "当朋友来咨询烦恼时，我..." }, a: [
@@ -590,7 +603,7 @@ const DATA = {
             emoji: '💕', imageFile: 'classic.jpg',
             title: { ko: '클래식 에겐녀', en: 'Classic Egen Woman', ja: 'クラシックエゲン女', zh: '经典艾根女' },
             subtitle: { ko: '완벽한 여자친구', en: 'The Perfect Girlfriend', ja: '完璧な彼女', zh: '完美女友' },
-            description: { ko: '사랑스럽고 배려심 깊은 당신은 주변 사람들에게 늘 기쁨을 줍니다. 감정 표현에 솔직하고, 관계에서의 조화를 가장 중요하게 생각하는 로맨티스트입니다. 아름다운 것을 좋아하고, 기념일이나 특별한 날을 챙기는 것을 즐깁니다. 타인의 감정을 잘 살피고, 분위기를 부드럽게 만드는 능력이 탁월합니다. 당신의 사랑스러운 에너지와 긍정적인 태도는 주변을 밝게 만듭니다. 때로는 감정의 기복이 있지만, 당신의 진심은 늘 통하기 마련입니다.\n\n❤️ 연애 스타일: 로맨틱한 분위기와 달콤한 애정 표현을 즐깁니다. 연인과의 정서적 교감을 매우 중요하게 생각하며, 관계의 안정을 추구합니다. 연인을 위한 이벤트를 준비하는 것을 좋아합니다.\n\n💼 추천 직업: 플로리스트, 웨딩플래너, 파티시에, 뷰티 컨설턴트, 아나운서\n\n⭐ 성장 포인트: 감정적인 결정보다는 때로는 이성적이고 현실적인 판단을 내리는 연습이 필요합니다. 모든 사람을 만족시키려 하기보다 자신의 주관을 지키는 것이 중요합니다.', en: 'Lovely and considerate, you always bring joy to those around you. You are a romantic who is honest with your emotions and values harmony in relationships above all. You appreciate beautiful things and enjoy celebrating anniversaries and special days. You are excellent at reading others\' emotions and softening the atmosphere. Your lovely energy and positive attitude brighten your surroundings. You may have emotional ups and downs, but your sincerity always shines through.\n\n❤️ Love Style: You enjoy a romantic atmosphere and sweet expressions of affection. You place great importance on emotional connection with your partner and seek stability in the relationship. You love planning events for your partner.\n\n💼 Recommended Jobs: Florist, Wedding Planner, Pastry Chef, Beauty Consultant, Announcer\n\n⭐ Growth Point: You need to practice making rational and realistic judgments at times, rather than purely emotional decisions. It\'s important to maintain your own opinions rather than trying to please everyone.', ja: '愛らしく思いやりのあるあなたは、周りの人々にいつも喜びを与えます。感情表現に素直で、関係の調和を最も重要視するロマンチストです。美しいものが好きで、記念日や特別な日を祝うことを楽しんでいます。他人の感情をよく読み取り、雰囲気を和らげる能力が卓越しています。あなたの愛らしいエネルギーとポジティブな態度は、周りを明るくします。感情の起伏があるかもしれませんが、あなたの真心は常に通じます。\n\n❤️恋愛スタイル：ロマンチックな雰囲気と甘い愛情表現を楽しんでいます。恋人との情緒的な交流を非常に重要視し、関係の安定を求めます。恋人のためにイベントを計画するのが好きです。\n\n💼おすすめの職業：フローリスト、ウェディングプランナー、パティシエ、ビューティーコンサルタント、アナウンサー\n\n⭐成長ポイント：感情的な決定よりも、時には理性的で現実的な判断を下す練習が必要です。すべての人を満足させようとするより、自分の主観を守ることが重要です。', zh: '可爱又体贴的你，总是给周围的人带来欢乐。你是一个对情感诚实、将关系和谐置于首位的浪漫主义者。你欣赏美丽的事物，喜欢庆祝纪念日和特殊的日子。你非常擅长解读他人的情感和缓和气氛。你可爱的能量和积极的态度照亮了你的周围。你可能会有情绪波动，但你的真诚总能打动人心。\n\n❤️ 恋爱风格：你享受浪漫的氛围和甜蜜的爱意表达。你非常重视与伴侣的情感联系，并寻求关系的稳定。你喜欢为伴侣策划活动。\n\n💼 推荐职业：花艺师、婚礼策划师、糕点师、美容顾问、播音员\n\n⭐ 成长点：你需要练习在某些时候做出理性和现实的判断，而不是纯粹的情感决定。坚持自己的观点比试图取悦每个人更重要。' },
+            description: { ko: '사랑스럽고 배려심 깊은 당신은 주변 사람들에게 늘 기쁨을 줍니다. 감정 표현에 솔직하고, 관계에서의 조화를 가장 중요하게 생각하는 로맨티스트입니다. 아름다운 것을 좋아하고, 기념일이나 특별한 날을 챙기는 것을 즐깁니다. 타인의 감정을 잘 살피고, 분위기를 부드럽게 만드는 능력이 탁월합니다. 당신의 사랑스러운 에너지와 긍정적인 태도는 주변을 밝게 만듭니다. 때로는 감정의 기복이 있지만, 당신의 진심은 늘 통하기 마련입니다.\n\n❤️ 연애 스타일: 로맨틱한 분위기와 달콤한 애정 표현을 즐깁니다. 연인과의 정서적 교감을 매우 중요하게 생각하며, 관계의 안정을 추구합니다. 연인을 위한 이벤트를 준비하는 것을 좋아합니다.\n\n💼 추천 직업: 플로리스트, 웨딩플래너, 파티시에, 뷰티 컨설턴트, 아나운서\n\n⭐ 성장 포인트: 감정적인 결정보다는 때로는 이성적이고 현실적인 판단을 내리는 연습이 필요합니다. 모든 사람을 만족시키려 하기보다 자신의 주관을 지키는 것이 중요합니다.', en: 'Lovely and considerate, you always bring joy to those around you. You are a romantic who is honest with your emotions and values harmony in relationships above all. You appreciate beautiful things and enjoy celebrating anniversaries and special days. You are excellent at reading others\' emotions and softening the atmosphere. Your lovely energy and positive attitude brighten your surroundings. You may have emotional ups and downs, but your sincerity always shines through.\n\n❤️ Love Style: You enjoy a romantic atmosphere and sweet expressions of affection. You place great importance on emotional connection with your partner and seek stability in the relationship. You love planning events for your partner.\n\n💼 Recommended Jobs: Florist, Wedding Planner, Pastry Chef, Beauty Consultant, Announcer\n\n⭐ Growth Point: You need to practice making rational and realistic judgments at times, rather than purely emotional decisions. It\'s important to maintain your own opinions rather than trying to please everyone.', ja: '愛らしく思いやりのあるあなたは、周りの人々にいつも喜びを与えます。感情表現に素直で、関係の調和を最も重要視するロマンチ스트です。美しいものが好きで、記念日や特別な日を祝うことを楽しんでいます。他人の感情をよく読み取り、雰囲気を和らげる能力が卓越しています。あなたの愛らしいエネルギーとポジティブな態度は、周りを明るくします。感情の起伏があるかもしれませんが、あなたの真心は常に通じます。\n\n❤️恋愛スタイル：ロマンチックな雰囲気と甘い愛情表現を楽しんでいます。恋人との情緒的な交流を非常に重要視し、関係の安定を求めます。恋人のためにイベントを計画するのが好きです。\n\n💼おすすめの職業：フローリスト、ウェディングプランナー、パティシエ、ビューティーコンサルタント、アナウンサー\n\n⭐成長ポイント：感情的な決定よりも、時には理性的で現実的な判断を下す練習が必要です。すべての人を満足させようとするより、自分の主観を守ることが重要です。', zh: '可爱又体贴的你，总是给周围的人带来欢乐。你是一个对情感诚实、将关系和谐置于首位的浪漫主义者。你欣赏美丽的事物，喜欢庆祝纪念日和特殊的日子。你非常擅长解读他人的情感和缓和气氛。你可爱的能量和积极的态度照亮了你的周围。你可能会有情绪波动，但你的真诚总能打动人心。\n\n❤️ 恋爱风格：你享受浪漫的氛围和甜蜜的爱意表达。你非常重视与伴侣的情感联系，并寻求关系的稳定。你喜欢为伴侣策划活动。\n\n💼 推荐职业：花艺师、婚礼策划师、糕点师、美容顾问、播音员\n\n⭐ 成长点：你需要练习在某些时候做出理性和现实的判断，而不是纯粹的情感决定。坚持自己的观点比试图取悦每个人更重要。' },
             features: [ { emoji: '💖', text: { ko: '사랑스러운 에너지', en: 'Lovely Energy', ja: '愛らしいエネルギー', zh: '可爱的能量' } }, { emoji: '💌', text: { ko: '깊은 배려심', en: 'Deep Consideration', ja: '深い思いやり', zh: '深切的体贴' } }, { emoji: '⚖️', text: { ko: '조화 추구', en: 'Harmony Seeker', ja: '調和を追求', zh: '追求和谐' } }, { emoji: '🌹', text: { ko: '로맨티스트', en: 'Romanticist', ja: 'ロマンチスト', zh: '浪漫主义者' } } ]
         },
         'maternal': {
@@ -774,7 +787,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     const header = {
-        container: $('.header'),
         counter: $('#question-counter'),
         progressContainer: $('#progress-container'),
         settingsBtn: $('#settings-btn')
@@ -832,7 +844,6 @@ document.addEventListener('DOMContentLoaded', () => {
         closeBtn: $('#back-to-main-btn')
     };
     
-    // ... (이하 로직은 이전과 동일)
     function calculateResult(answers, userGender) {
         let totalEgen = 0;
         let totalTeto = 0;
@@ -896,7 +907,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const scores = DATA.compatibilityMatrix[baseTypeKey];
         
         if (!scores) {
-            console.warn(`No compatibility data for ${baseTypeKey}`);
             return { bestMatch: { type: 'N/A', score: 0 }, worstMatch: { type: 'N/A', score: 100 } };
         }
         
@@ -916,7 +926,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return { bestMatch, worstMatch };
     }
-    
+
     function getCssVar(varName) {
         return getComputedStyle(document.body).getPropertyValue(varName).trim();
     }
@@ -927,31 +937,26 @@ document.addEventListener('DOMContentLoaded', () => {
         canvas.height = 1080;
         const ctx = canvas.getContext('2d');
         const c = getCssVar;
-
-        // Background
+        
         const gradient = ctx.createLinearGradient(0, 0, 1080, 1080);
         gradient.addColorStop(0, c('--c-bg'));
         gradient.addColorStop(1, c('--c-surface'));
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, 1080, 1080);
 
-        // Title
         ctx.fillStyle = c('--c-text');
         ctx.font = `bold 60px ${c('--font-title')}`;
         ctx.textAlign = 'center';
         ctx.fillText(`${userInfo.nickname}'s Result`, 540, 120);
 
-        // Image
         const img = new Image();
-        img.crossOrigin = "anonymous";
+        img.crossOrigin = "anonymous"; // ⚠️ CORS 문제 해결
         const resultTypeData = DATA.results[result.finalSubtype];
         
         const imagePromise = new Promise((resolve, reject) => {
             img.onload = () => resolve(img);
             img.onerror = reject;
-            // Use a proxy or ensure images are served with correct CORS headers
-            // For GitHub Pages, this direct link should work if the repo is public
-            img.src = `https://gpt-4-turbo-advanced.github.io/EgenTeto-Advanced-Test/images/${resultTypeData.imageFile}`;
+            img.src = `images/${resultTypeData.imageFile}`; // ⚠️ 상대 경로로 수정
         });
 
         try {
@@ -962,7 +967,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.font = '200px sans-serif';
             ctx.fillText(resultTypeData.emoji, 540, 320);
         }
-
+        
         ctx.fillStyle = c('--c-primary');
         ctx.font = `bold 80px ${c('--font-title')}`;
         ctx.fillText(resultTypeData.title[currentLang], 540, 520);
@@ -990,7 +995,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     legend: { display: false },
                     datalabels: {
                         color: '#fff', font: { weight: 'bold', size: 24 },
-                        formatter: (value, context) => `${value}%`
+                        formatter: (value) => `${value}%`
                     }
                 }, cutout: '70%'
             },
@@ -1024,11 +1029,14 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.textAlign = 'right';
         ctx.fillText(`${compat.worstMatch.score}`, 500, 1010);
         
-        const qrCanvas = document.createElement('canvas');
-        const urlToEncode = `${window.location.origin}${window.location.pathname}`;
-        await QRCode.toCanvas(qrCanvas, urlToEncode, { width: 150, margin: 1, color: { dark: c('--c-text'), light: '#0000' } });
-        ctx.drawImage(qrCanvas, 880, 880, 150, 150);
-        
+        // ⚠️ QRCode 오류 방지 로직 추가
+        if (window.QRCode) {
+            const qrCanvas = document.createElement('canvas');
+            const urlToEncode = `${window.location.origin}${window.location.pathname}`;
+            await QRCode.toCanvas(qrCanvas, urlToEncode, { width: 150, margin: 1, color: { dark: c('--c-text'), light: '#0000' } });
+            ctx.drawImage(qrCanvas, 880, 880, 150, 150);
+        }
+
         ctx.fillStyle = c('--c-text');
         ctx.font = `24px ${c('--font-main')}`;
         ctx.textAlign = 'center';
@@ -1036,7 +1044,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return canvas.toDataURL('image/png');
     }
-
+    
     function updateHeader(screenName) {
         if (screenName === 'test') {
             header.progressContainer.classList.remove('hidden');
@@ -1218,7 +1226,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 plugins: { 
                     legend: { display: false },
                     datalabels: {
-                        color: (context) => context.dataset.backgroundColor[context.dataIndex] === getCssVar('--c-primary') ? '#fff' : '#fff',
+                        color: '#fff',
                         font: {
                             family: getCssVar('--font-main'),
                             weight: 'bold',
