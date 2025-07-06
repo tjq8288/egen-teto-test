@@ -14,10 +14,11 @@
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-    <!-- ⚠️ Chart.js Datalabels 플러그인 추가 -->
+    <!-- ⚠️ 차트 데이터 라벨 플러그인 추가 -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.1.0"></script>
 
     <style>
+        /* CSS는 이전 답변과 동일합니다. */
         @import url('https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap');
         :root {
             --font-main: 'Noto Sans KR', sans-serif;
@@ -41,6 +42,20 @@
             --c-bg: #22223b; --c-surface: #2b2d42;
             --c-text: #edf2f4; --c-text-light: #adb5bd;
             --c-border: #4a4e69;
+        }
+        body[data-theme='mint-choco'] {
+            --c-primary: #66D2B3; --c-secondary: #4A2E2C;
+            --c-accent: #FFE8D6; --c-accent-light: #e0f2e9;
+            --c-bg: #F0FFF9; --c-surface: #FFFFFF;
+            --c-text: #4A2E2C; --c-text-light: #8C6A67;
+            --c-border: #B4E1D1;
+        }
+        body[data-theme='tangerine'] {
+            --c-primary: #FF7F50; --c-secondary: #FFF5E1;
+            --c-accent: #4682B4; --c-accent-light: #e8f4ff;
+            --c-bg: #FFF8F0; --c-surface: #FFFFFF;
+            --c-text: #593A27; --c-text-light: #9C7C68;
+            --c-border: #FFE4B5;
         }
         body.dark-mode {
             --c-primary: #5865f2; --c-secondary: #4f545c;
@@ -175,30 +190,20 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        /* ⚠️ RESULT SCREEN LAYOUT REVISED */
         #result-screen { padding-bottom: 2rem; justify-content: flex-start; padding-top: 4rem; }
         .result-main-visual {
-            background: var(--c-bg);
-            border-radius: var(--border-radius-lg);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background: var(--c-bg); border-radius: var(--border-radius-lg); padding: 1.5rem;
+            margin-bottom: 1.5rem; display: flex; flex-direction: column; align-items: center;
         }
         #result-image-container {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 5px solid var(--c-surface);
-            box-shadow: 0 5px 15px var(--shadow-dark);
-            margin-bottom: 1rem;
+            width: 180px; height: 180px; border-radius: 50%;
+            overflow: hidden; border: 5px solid var(--c-surface);
+            box-shadow: 0 5px 15px var(--shadow-dark); margin-bottom: 1rem;
         }
         #result-image { width: 100%; height: 100%; object-fit: cover; }
         #result-title { font-size: 2rem; color: var(--c-primary); }
         #result-subtitle-text { font-size: 1.1rem; }
-        #score-chart-container { width: 100%; max-width: 200px; margin: 1rem auto; }
+        #score-chart-container { width: 100%; max-width: 250px; margin: 1rem auto; }
         
         #result-description { font-size: 0.95rem; text-align: left; margin-bottom: 1.5rem; white-space: pre-wrap; }
         .result-section { margin-bottom: 1.5rem; }
@@ -233,7 +238,7 @@
             body { background: var(--c-surface); }
             #app { border-radius: 0; max-height: none; height: 100vh; box-shadow: none; }
             .screen { padding-top: 6rem; }
-            #user-info-screen, #history-screen, #result-screen { padding-top: 2rem; }
+            #user-info-screen, #history-screen, #result-screen { padding-top: 4rem; }
         }
 
         .toast {
@@ -249,7 +254,6 @@
     </style>
 </head>
 <body>
-
     <div id="app">
         <!-- HEADER -->
         <div class="header">
@@ -372,15 +376,15 @@
                 <div id="feature-tags"></div>
             </div>
             <div class="result-section">
-                <h3 data-lang="compat_title">💖 환상의 궁합 / 최악의 궁합 💔</h3>
+                <h3 data-lang="compat_title">💖 환상의 궁합 / 챌린지 궁합 💔</h3>
                 <div id="compatibility-section">
                     <div class="compat-card best">
-                        <h4 data-lang="best_match">환상의 궁합</h4>
+                        <h4 data-lang="best_match">Best Match</h4>
                         <p class="type-name" id="best-match-type"></p>
                         <p class="score" id="best-match-score"></p>
                     </div>
                     <div class="compat-card worst">
-                        <h4 data-lang="worst_match">최악의 궁합</h4>
+                        <h4 data-lang="worst_match">Challenge Match</h4>
                         <p class="type-name" id="worst-match-type"></p>
                         <p class="score" id="worst-match-score"></p>
                     </div>
@@ -421,9 +425,9 @@
     </div>
 
 <script>
+// DATA Object... (The same as before)
 const DATA = {
     questions: [
-        // Q1-5: 감정표현
         { category: "emotion", q: { ko: "친구가 고민 상담을 요청했을 때 나는?", en: "When a friend asks for advice, I...", ja: "友達が悩み相談をしてきた時、私は？", zh: "当朋友来咨询烦恼时，我..." }, a: [
             { text: { ko: "같이 울어주며 감정적으로 깊이 공감한다", en: "Cry with them, deeply empathizing emotionally.", ja: "一緒に泣いてあげて、感情的に深く共感する", zh: "和他们一起哭，在情感上深表同情" }, s: { e: 2, t: 0, st: 'pure' } },
             { text: { ko: "문제의 핵심을 파악하고 논리적 해결책을 제시한다", en: "Grasp the problem's core and suggest a logical solution.", ja: "問題の核心を把握し、論理的な解決策を提示する", zh: "抓住问题的核心，提出合乎逻辑的解决方案" }, s: { e: 0, t: 2, st: 'leader' } },
@@ -761,6 +765,9 @@ const DATA = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+    // ⚠️ Chart.js 데이터라벨 플러그인 등록
+    Chart.register(ChartDataLabels);
+
     let currentUserInfo = { nickname: '', gender: null, age: null, purpose: null };
     let currentQuestionIndex = 0;
     let userAnswers = [];
@@ -843,6 +850,7 @@ document.addEventListener('DOMContentLoaded', () => {
         closeBtn: $('#back-to-main-btn')
     };
     
+    // ... (이하 로직은 이전과 동일)
     function calculateResult(answers, userGender) {
         let totalEgen = 0;
         let totalTeto = 0;
@@ -1196,16 +1204,33 @@ document.addEventListener('DOMContentLoaded', () => {
         chartInstances.score = new Chart(resultUI.scoreChartCanvas, {
             type: 'doughnut',
             data: {
-                labels: [`Egen ${result.percentage.egen}%`, `Teto ${result.percentage.teto}%`],
+                labels: ['Egen', 'Teto'],
                 datasets: [{
                     data: [result.percentage.egen, result.percentage.teto],
                     backgroundColor: [getCssVar('--c-primary'), getCssVar('--c-accent')],
-                    borderColor: getCssVar('--c-bg'),
-                    borderWidth: 8,
-                    borderRadius: 5,
+                    borderColor: getCssVar('--c-surface'),
+                    borderWidth: 15,
+                    borderRadius: 15,
                 }]
             },
-            options: { plugins: { legend: { display: false } }, cutout: '70%' }
+            options: { 
+                plugins: { 
+                    legend: { display: false },
+                    // ⚠️ Datalabels 플러그인 설정
+                    datalabels: {
+                        color: '#fff',
+                        font: {
+                            weight: 'bold',
+                            size: 16,
+                        },
+                        formatter: (value, context) => {
+                            const label = context.chart.data.labels[context.dataIndex];
+                            return `${label}\n${value}%`;
+                        }
+                    }
+                }, 
+                cutout: '65%' 
+            }
         });
         
         const bestTypeKey = compat.bestMatch.type;
@@ -1271,7 +1296,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function init() {
-        // Load from localStorage
         const savedUserInfo = JSON.parse(localStorage.getItem('egenTetoUserInfo'));
         if (savedUserInfo) {
             currentUserInfo = savedUserInfo;
@@ -1379,7 +1403,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const dataUrl = await generateResultImage(lastResult.userInfo, lastResult.result, lastResult.compat);
             const link = document.createElement('a');
             link.href = dataUrl;
-            link.download = `egen_teto_result_${lastResult.userInfo.nickname}.jpg`;
+            link.download = `egen_teto_result_${lastResult.userInfo.nickname}.png`;
             link.click();
             
             resultUI.generateImageBtn.disabled = false;
