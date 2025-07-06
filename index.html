@@ -917,115 +917,223 @@ document.addEventListener('DOMContentLoaded', () => {
     async function generateResultImage(userInfo, result, compat) {
         const canvas = document.createElement('canvas');
         canvas.width = 1080;
-        canvas.height = 1080;
+        canvas.height = 1350; // 세로 길이 증가
         const ctx = canvas.getContext('2d');
         const c = getCssVar;
         
-        const gradient = ctx.createLinearGradient(0, 0, 1080, 1080);
-        gradient.addColorStop(0, c('--c-bg'));
-        gradient.addColorStop(1, c('--c-surface'));
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, 1080, 1080);
-
-        ctx.fillStyle = c('--c-text');
-        ctx.font = `bold 60px ${c('--font-title')}`;
+        // 배경 - 그라디언트
+        const bgGradient = ctx.createLinearGradient(0, 0, 0, 1350);
+        bgGradient.addColorStop(0, '#667eea');
+        bgGradient.addColorStop(1, '#764ba2');
+        ctx.fillStyle = bgGradient;
+        ctx.fillRect(0, 0, 1080, 1350);
+        
+        // 메인 카드 배경
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+        ctx.shadowBlur = 30;
+        ctx.shadowOffsetY = 15;
+        roundRect(ctx, 60, 80, 960, 1190, 30);
+        ctx.fill();
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetY = 0;
+        
+        // 상단 헤더 영역
+        const headerGradient = ctx.createLinearGradient(0, 80, 0, 280);
+        headerGradient.addColorStop(0, c('--c-primary'));
+        headerGradient.addColorStop(1, c('--c-accent'));
+        ctx.fillStyle = headerGradient;
+        roundRect(ctx, 60, 80, 960, 200, 30, true, false);
+        ctx.fill();
+        
+        // 타이틀 텍스트
+        ctx.fillStyle = 'white';
+        ctx.font = `bold 48px ${c('--font-title')}`;
         ctx.textAlign = 'center';
-        ctx.fillText(`${userInfo.nickname}'s Result`, 540, 120);
-
-        const img = new Image();
-        img.crossOrigin = "anonymous"; // ⚠️ CORS 문제 해결
+        ctx.fillText('EGEN/TETO 성향 테스트', 540, 140);
+        
+        ctx.font = `32px ${c('--font-main')}`;
+        ctx.fillText(`${userInfo.nickname}님의 결과`, 540, 200);
+        
+        // 캐릭터 이미지/이모지 영역
         const resultTypeData = DATA.results[result.finalSubtype];
+        
+        // 이미지 배경 원
+        ctx.fillStyle = 'white';
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+        ctx.shadowBlur = 20;
+        ctx.beginPath();
+        ctx.arc(540, 400, 120, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
+        
+        // 캐릭터 이미지 로드 시도
+        const img = new Image();
+        img.crossOrigin = "anonymous";
         
         const imagePromise = new Promise((resolve, reject) => {
             img.onload = () => resolve(img);
             img.onerror = reject;
-            img.src = `images/${resultTypeData.imageFile}`; // ⚠️ 상대 경로로 수정
+            img.src = `images/${resultTypeData.imageFile}`;
         });
-
+        
         try {
             const loadedImg = await imagePromise;
-            ctx.drawImage(loadedImg, 390, 180, 300, 300);
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(540, 400, 110, 0, Math.PI * 2);
+            ctx.clip();
+            ctx.drawImage(loadedImg, 430, 290, 220, 220);
+            ctx.restore();
         } catch (e) {
-            console.error("Image loading failed, drawing emoji instead.", e);
-            ctx.font = '200px sans-serif';
-            ctx.fillText(resultTypeData.emoji, 540, 320);
+            ctx.font = '180px sans-serif';
+            ctx.fillStyle = c('--c-primary');
+            ctx.textAlign = 'center';
+            ctx.fillText(resultTypeData.emoji, 540, 450);
         }
         
+        // 결과 타이틀
+        ctx.fillStyle = '#2c3e50';
+        ctx.font = `bold 64px ${c('--font-title')}`;
+        ctx.textAlign = 'center';
+        ctx.fillText(resultTypeData.title[currentLang], 540, 580);
+        
+        // 서브타이틀
+        ctx.fillStyle = '#7f8c8d';
+        ctx.font = `36px ${c('--font-main')}`;
+        ctx.fillText(resultTypeData.subtitle[currentLang], 540, 630);
+        
+        // 점수 영역 배경
+        ctx.fillStyle = '#f8f9fa';
+        roundRect(ctx, 120, 680, 840, 180, 20);
+        ctx.fill();
+        
+        // 점수 바 그리기
+        const egenWidth = (result.percentage.egen / 100) * 400;
+        const tetoWidth = (result.percentage.teto / 100) * 400;
+        
+        // Egen 점수 바
         ctx.fillStyle = c('--c-primary');
-        ctx.font = `bold 80px ${c('--font-title')}`;
-        ctx.fillText(resultTypeData.title[currentLang], 540, 520);
+        roundRect(ctx, 180, 720, egenWidth, 40, 20);
+        ctx.fill();
         
-        ctx.fillStyle = c('--c-text-light');
-        ctx.font = `40px ${c('--font-main')}`;
-        ctx.fillText(resultTypeData.subtitle[currentLang], 540, 580);
+        // Teto 점수 바
+        ctx.fillStyle = c('--c-accent');
+        roundRect(ctx, 180, 780, tetoWidth, 40, 20);
+        ctx.fill();
         
-        const chartCanvas = document.createElement('canvas');
-        chartCanvas.width = 300; chartCanvas.height = 300;
-        new Chart(chartCanvas.getContext('2d'), {
-            type: 'doughnut',
-            data: {
-                labels: [`Egen`, `Teto`],
-                datasets: [{
-                    data: [result.percentage.egen, result.percentage.teto],
-                    backgroundColor: [c('--c-primary'), c('--c-accent')],
-                    borderColor: c('--c-surface'),
-                    borderWidth: 10,
-                    borderRadius: 10
-                }]
-            },
-            options: {
-                responsive: false, animation: { duration: 0 }, plugins: { 
-                    legend: { display: false },
-                    datalabels: {
-                        color: '#fff', font: { weight: 'bold', size: 24 },
-                        formatter: (value) => `${value}%`
-                    }
-                }, cutout: '70%'
-            },
-            plugins: [ChartDataLabels]
-        });
-        
-        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-        ctx.drawImage(chartCanvas, 390, 620, 250, 250);
-        
-        ctx.fillStyle = c('--c-text');
+        // 점수 텍스트
+        ctx.fillStyle = '#2c3e50';
+        ctx.font = `bold 32px ${c('--font-main')}`;
         ctx.textAlign = 'left';
-        ctx.font = `bold 36px ${c('--font-main')}`;
+        ctx.fillText('EGEN', 180, 710);
+        ctx.fillText('TETO', 180, 770);
+        
+        ctx.textAlign = 'right';
+        ctx.fillText(`${result.percentage.egen}%`, 580, 710);
+        ctx.fillText(`${result.percentage.teto}%`, 580, 770);
+        
+        // 궁합 정보 영역
+        ctx.fillStyle = '#e8f5e8';
+        roundRect(ctx, 120, 900, 400, 150, 20);
+        ctx.fill();
+        
+        ctx.fillStyle = '#ffe8e8';
+        roundRect(ctx, 560, 900, 400, 150, 20);
+        ctx.fill();
+        
+        // 최고 궁합
+        ctx.fillStyle = '#27ae60';
+        ctx.font = `bold 28px ${c('--font-main')}`;
+        ctx.textAlign = 'center';
+        ctx.fillText('💖 BEST MATCH', 320, 930);
         
         const bestTypeKey = compat.bestMatch.type;
         const bestSubtype = bestTypeKey ? bestTypeKey.split('-')[2] : 'N/A';
         const bestTypeName = bestSubtype !== 'N/A' ? DATA.results[bestSubtype].title[currentLang] : 'N/A';
-        ctx.fillText(`Best: ${bestTypeName}`, 100, 950);
         
-        ctx.fillStyle = '#2ecc71';
-        ctx.textAlign = 'right';
-        ctx.fillText(`${compat.bestMatch.score}`, 500, 950);
+        ctx.fillStyle = '#2c3e50';
+        ctx.font = `24px ${c('--font-main')}`;
+        ctx.fillText(bestTypeName, 320, 965);
         
-        ctx.fillStyle = c('--c-text');
-        ctx.textAlign = 'left';
+        ctx.fillStyle = '#27ae60';
+        ctx.font = `bold 32px ${c('--font-main')}`;
+        ctx.fillText(`${compat.bestMatch.score}점`, 320, 1005);
+        
+        // 도전 궁합
+        ctx.fillStyle = '#e74c3c';
+        ctx.font = `bold 28px ${c('--font-main')}`;
+        ctx.fillText('💔 CHALLENGE', 760, 930);
+        
         const worstTypeKey = compat.worstMatch.type;
         const worstSubtype = worstTypeKey ? worstTypeKey.split('-')[2] : 'N/A';
         const worstTypeName = worstSubtype !== 'N/A' ? DATA.results[worstSubtype].title[currentLang] : 'N/A';
-        ctx.fillText(`Challenge: ${worstTypeName}`, 100, 1010);
+        
+        ctx.fillStyle = '#2c3e50';
+        ctx.font = `24px ${c('--font-main')}`;
+        ctx.fillText(worstTypeName, 760, 965);
         
         ctx.fillStyle = '#e74c3c';
-        ctx.textAlign = 'right';
-        ctx.fillText(`${compat.worstMatch.score}`, 500, 1010);
+        ctx.font = `bold 32px ${c('--font-main')}`;
+        ctx.fillText(`${compat.worstMatch.score}점`, 760, 1005);
         
-        // ⚠️ QRCode 오류 방지 로직 추가
+        // 하단 푸터
+        ctx.fillStyle = '#95a5a6';
+        ctx.font = `24px ${c('--font-main')}`;
+        ctx.textAlign = 'center';
+        ctx.fillText('자세한 결과는 웹사이트에서 확인하세요!', 540, 1150);
+        
+        // QR 코드 (우하단 작게)
         if (window.QRCode) {
             const qrCanvas = document.createElement('canvas');
             const urlToEncode = `${window.location.origin}${window.location.pathname}`;
-            await QRCode.toCanvas(qrCanvas, urlToEncode, { width: 150, margin: 1, color: { dark: c('--c-text'), light: '#0000' } });
-            ctx.drawImage(qrCanvas, 880, 880, 150, 150);
+            await QRCode.toCanvas(qrCanvas, urlToEncode, { 
+                width: 100, 
+                margin: 1, 
+                color: { dark: '#34495e', light: '#ffffff00' } 
+            });
+            
+            ctx.fillStyle = 'white';
+            ctx.fillRect(850, 1180, 120, 120);
+            ctx.drawImage(qrCanvas, 860, 1190, 100, 100);
         }
-
-        ctx.fillStyle = c('--c-text');
-        ctx.font = `24px ${c('--font-main')}`;
-        ctx.textAlign = 'center';
-        ctx.fillText('Test Again!', 955, 1050);
-
+        
         return canvas.toDataURL('image/png');
+    }
+    
+    // 라운드 사각형 헬퍼 함수 추가
+    function roundRect(ctx, x, y, width, height, radius, topOnly = false, bottomOnly = false) {
+        ctx.beginPath();
+        if (topOnly) {
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height);
+            ctx.lineTo(x, y + height);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+        } else if (bottomOnly) {
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + width, y);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y);
+        } else {
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+        }
+        ctx.closePath();
     }
     
     function updateHeader(screenName) {
