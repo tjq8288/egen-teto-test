@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- 1. 제목 수정 -->
     <title>에겐/테토 성향 테스트</title>
     <meta name="description" content="나의 에겐/테토 성향과 숨겨진 궁합을 알아보세요! 144가지 조합의 정밀 분석과 나만의 결과 이미지까지.">
-    <meta property="og:title" content="에겐/테토 성향 테스트 (최종 완성본)">
+    <meta property="og:title" content="에겐/테토 성향 테스트">
     <meta property="og:description" content="144가지 조합의 정밀 분석과 나만의 결과 이미지까지.">
     <meta property="og:image" content="https://gpt-4-turbo-advanced.github.io/EgenTeto-Advanced-Test/og-image.png">
     <meta property="og:url" content="https://gpt-4-turbo-advanced.github.io/EgenTeto-Advanced-Test/">
@@ -14,11 +15,10 @@
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-    <!-- ⚠️ 차트 데이터 라벨 플러그인 추가 -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.1.0"></script>
 
     <style>
-        /* CSS는 이전 답변과 동일합니다. */
+        /* CSS는 이전과 동일합니다. */
         @import url('https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap');
         :root {
             --font-main: 'Noto Sans KR', sans-serif;
@@ -64,7 +64,6 @@
             --c-text: #dcddde; --c-text-light: #b9bbbe;
             --c-border: #40444b;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html, body { width: 100%; height: 100%; overflow: hidden; }
         body {
@@ -99,13 +98,10 @@
         }
         .screen::-webkit-scrollbar { display: none; }
         .screen.hidden { opacity: 0; pointer-events: none; transform: scale(0.98); z-index: -1; }
-        
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-10px); } }
-
         .screen.active { animation: fadeIn 0.4s forwards; z-index: 10; }
         .screen.inactive { animation: fadeOut 0.4s forwards; }
-        
         .header { position: absolute; top: 0; left: 0; width: 100%; padding: 1rem 1.5rem; z-index: 100; }
         .header-top { display: flex; justify-content: space-between; align-items: center; height: 36px; }
         #question-counter { font-size: 0.9rem; color: var(--c-text-light); font-weight: 500;}
@@ -113,7 +109,6 @@
         #progress-container { width: 100%; background: var(--c-border); border-radius: 20px; height: 10px; overflow: hidden; margin-top: 0.5rem; }
         #progress-container.hidden { display: none; }
         #progress-bar { width: 0%; height: 100%; background: var(--c-primary); border-radius: 20px; transition: width 0.4s ease; }
-        
         #settings-modal {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); z-index: 1001;
@@ -133,7 +128,6 @@
         #theme-options .theme-option { width: 36px; height: 36px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; }
         #theme-options .theme-option.selected { border-color: var(--c-accent); }
         #lang-switcher .lang-btn { flex-grow: 1; }
-
         h1, h2 { font-family: var(--font-title); }
         h1 { font-size: 2.2rem; color: var(--c-primary); margin-bottom: 0.5rem; }
         p { font-size: 1rem; line-height: 1.6; color: var(--c-text-light); }
@@ -148,7 +142,6 @@
         .main-btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 6px 20px color-mix(in srgb, var(--c-primary), transparent 50%); }
         .main-btn:disabled { background: var(--c-border); color: var(--c-text-light); cursor: not-allowed; box-shadow: none; transform: none;}
         .main-btn.secondary { background: transparent; border: 1px solid var(--c-primary); color: var(--c-primary); box-shadow: none; }
-        
         #user-info-screen { justify-content: center; gap: 1.2rem; padding-top: 4rem;}
         .form-group { width: 100%; text-align: left; }
         .form-group label { display: block; font-weight: 500; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--c-text-light); }
@@ -164,7 +157,6 @@
             transition: all var(--transition-speed);
         }
         .choice-btn.selected { background: var(--c-primary); color: white; border-color: var(--c-primary); font-weight: bold; }
-        
         #test-screen { padding-top: 6rem; justify-content: space-between; }
         .question-content { margin-top: 1rem; }
         #question-category { font-size: 0.9rem; color: var(--c-primary); font-weight: 500; margin-bottom: 0.5rem; height: 1.2em; }
@@ -181,7 +173,6 @@
         .test-footer { display: flex; justify-content: flex-start; width: 100%; margin-top: 1.5rem; }
         .nav-btn { padding: 0.7rem 1.5rem; background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 10px; font-weight: 500; cursor: pointer; }
         .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        
         #loading-screen { justify-content: center; align-items: center; }
         .spinner {
             width: 60px; height: 60px; border: 5px solid var(--c-border);
@@ -189,7 +180,6 @@
             animation: spin 1s linear infinite; margin-bottom: 1rem;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        
         #result-screen { padding-bottom: 2rem; justify-content: flex-start; padding-top: 4rem; }
         .result-main-visual {
             background: var(--c-bg); border-radius: var(--border-radius-lg); padding: 1.5rem;
@@ -204,7 +194,6 @@
         #result-title { font-size: 2rem; color: var(--c-primary); }
         #result-subtitle-text { font-size: 1.1rem; }
         #score-chart-container { width: 100%; max-width: 250px; margin: 1rem auto; }
-        
         #result-description { font-size: 0.95rem; text-align: left; margin-bottom: 1.5rem; white-space: pre-wrap; }
         .result-section { margin-bottom: 1.5rem; }
         .result-section h3 { font-family: var(--font-title); font-size: 1.2rem; color: var(--c-primary); margin-bottom: 0.75rem; text-align: left; border-left: 4px solid var(--c-accent); padding-left: 0.5rem; }
@@ -217,7 +206,6 @@
         .compat-card .score { font-family: var(--font-title); font-size: 1.8rem; }
         .compat-card.best .score { color: #2ecc71; }
         .compat-card.worst .score { color: #e74c3c; }
-
         .result-actions { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; }
         .result-actions .main-btn, .result-actions .main-btn.secondary { width: 100%; }
         #share-buttons { display: flex; justify-content: center; gap: 1rem; }
@@ -225,7 +213,6 @@
         .share-btn:hover { transform: scale(1.1); }
         #kakao-share-btn { background-color: #FEE500; color: #3A1D1D; }
         #twitter-share-btn { background-color: #1DA1F2; color: white; }
-        
         #history-screen { justify-content: flex-start; padding-top: 4rem; }
         #history-list { width: 100%; display: flex; flex-direction: column; gap: 1rem; }
         .history-item { background: var(--c-bg); padding: 1rem; border-radius: var(--border-radius-md); text-align: left; display: flex; justify-content: space-between; align-items: center; }
@@ -233,14 +220,12 @@
         .history-info .date { font-size: 0.8rem; color: var(--c-text-light); }
         .history-compare { width: 100%; margin-top: 1.5rem; }
         #history-chart-container { width: 100%; }
-
         @media (max-width: 500px) {
             body { background: var(--c-surface); }
             #app { border-radius: 0; max-height: none; height: 100vh; box-shadow: none; }
             .screen { padding-top: 6rem; }
             #user-info-screen, #history-screen, #result-screen { padding-top: 4rem; }
         }
-
         .toast {
             position: fixed; bottom: 2rem; left: 50%;
             transform: translateX(-50%);
@@ -400,7 +385,7 @@
                 <p id="age-advice" style="font-size:0.9rem; text-align:left; background:var(--c-bg); padding:1rem; border-radius:10px;"></p>
             </div>
             <div class="result-actions">
-                <button id="generate-image-btn" class="main-btn" data-lang="generate_image_btn">이미지 생성 및 다운로드</button>
+                <button id="generate-image-btn" class="main-btn" data-lang="generate_image_btn">결과 이미지 공유</button>
                 <div id="share-buttons">
                     <button class="share-btn" id="kakao-share-btn" title="카카오톡 공유">💬</button>
                     <button class="share-btn" id="twitter-share-btn" title="트위터 공유">🐦</button>
@@ -425,7 +410,7 @@
     </div>
 
 <script>
-// DATA Object... (The same as before)
+// ... (DATA 객체는 이전과 동일하므로 생략) ...
 const DATA = {
     questions: [
         { category: "emotion", q: { ko: "친구가 고민 상담을 요청했을 때 나는?", en: "When a friend asks for advice, I...", ja: "友達が悩み相談をしてきた時、私は？", zh: "当朋友来咨询烦恼时，我..." }, a: [
@@ -692,7 +677,7 @@ const DATA = {
             start_btn: '테스트 시작하기', prev_btn: '이전', loading_title: '결과 분석 중...', loading_text: '당신의 성향을 144개 궁합 매트릭스와 대조하고 있습니다.',
             result_subtitle: '당신의 에겐/테토 성향 분석 결과입니다.', desc_title: '상세 분석', features_title: '주요 특징',
             compat_title: '💖 환상의 궁합 / 챌린지 궁합 💔', best_match: 'Best Match', worst_match: 'Challenge Match',
-            advice_title: '맞춤 조언', download_title: '나만의 결과 이미지 공유하기', generate_image_btn: '이미지 생성 및 다운로드',
+            advice_title: '맞춤 조언', download_title: '나만의 결과 이미지 공유하기', generate_image_btn: '결과 이미지 공유',
             download_btn: '이미지 다운로드', restart_btn: '🔄 다시 테스트하기', history_title: '테스트 기록',
             history_subtitle: '나의 성향 변화를 확인해보세요.', history_compare_title: '최근 2회 결과 비교', close_btn: '닫기',
             copied_to_clipboard: '클립보드에 링크가 복사되었어요!',
@@ -709,7 +694,7 @@ const DATA = {
             start_btn: 'Start Test', prev_btn: 'Previous', loading_title: 'Analyzing results...', loading_text: 'Comparing your tendency with 144 compatibility matrices.',
             result_subtitle: 'Here is your Egen/Teto tendency analysis result.', desc_title: 'Detailed Analysis', features_title: 'Key Features',
             compat_title: '💖 Best Match / Challenge Match 💔', best_match: 'Best Match', worst_match: 'Challenge Match',
-            advice_title: 'Customized Advice', download_title: 'Share Your Custom Result Image', generate_image_btn: 'Generate & Download Image',
+            advice_title: 'Customized Advice', download_title: 'Share Your Custom Result Image', generate_image_btn: 'Share Result Image',
             download_btn: 'Download Image', restart_btn: '🔄 Test Again', history_title: 'Test History',
             history_subtitle: 'Check how your tendencies have changed.', history_compare_title: 'Comparison of Last 2 Results', close_btn: 'Close',
             copied_to_clipboard: 'Link copied to clipboard!',
@@ -726,7 +711,7 @@ const DATA = {
             start_btn: 'テストを始める', prev_btn: '戻る', loading_title: '結果を分析中...', loading_text: 'あなたの性向を144個の相性マトリックスと照合しています。',
             result_subtitle: 'あなたのエゲン/テト性向分析結果です。', desc_title: '詳細分析', features_title: '主な特徴',
             compat_title: '💖 最高の相性 / チャレンジ相性 💔', best_match: 'ベストマッチ', worst_match: 'チャレンジマッチ',
-            advice_title: 'カスタムアドバイス', download_title: '自分だけの結果画像を共有', generate_image_btn: '画像を生成してダウンロード',
+            advice_title: 'カスタムアドバイス', download_title: '自分だけの結果画像を共有', generate_image_btn: '結果画像を共有',
             download_btn: '画像をダウンロード', restart_btn: '🔄 もう一度テストする', history_title: 'テスト履歴',
             history_subtitle: 'あなたの性向の変化を確認してみてください。', history_compare_title: '最近2回の結果比較', close_btn: '閉じる',
             copied_to_clipboard: 'リンクがクリップボードにコピーされました！',
@@ -743,7 +728,7 @@ const DATA = {
             start_btn: '开始测试', prev_btn: '上一步', loading_title: '正在分析结果...', loading_text: '正在将您的倾向与144个配对矩阵进行比较。',
             result_subtitle: '这是您的艾根/特托倾向分析结果。', desc_title: '详细分析', features_title: '主要特点',
             compat_title: '💖 最佳配对 / 挑战配对 💔', best_match: '最佳配对', worst_match: '挑战配对',
-            advice_title: '定制建议', download_title: '分享您的专属结果图', generate_image_btn: '生成并下载图片',
+            advice_title: '定制建议', download_title: '分享您的专属结果图', generate_image_btn: '分享结果图片',
             download_btn: '下载图片', restart_btn: '🔄 重新测试', history_title: '测试历史',
             history_subtitle: '查看您倾向的变化。', history_compare_title: '最近两次结果比较', close_btn: '关闭',
             copied_to_clipboard: '链接已复制到剪贴板！',
@@ -765,7 +750,6 @@ const DATA = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    // ⚠️ Chart.js 데이터라벨 플러그인 등록
     Chart.register(ChartDataLabels);
 
     let currentUserInfo = { nickname: '', gender: null, age: null, purpose: null };
@@ -798,7 +782,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const settingsModal = {
         container: $('#settings-modal'),
-        content: $('.settings-content'),
         themeOptions: $('#theme-options'),
         darkModeToggle: $('#dark-mode-toggle'),
         langSwitcher: $('#lang-switcher'),
@@ -824,7 +807,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const resultUI = {
         userTitle: $('#result-user-title'),
-        imageContainer: $('#result-image-container'),
         image: $('#result-image'),
         title: $('#result-title'),
         subtitle: $('#result-subtitle-text'),
@@ -934,7 +916,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return { bestMatch, worstMatch };
     }
-
+    
     function getCssVar(varName) {
         return getComputedStyle(document.body).getPropertyValue(varName).trim();
     }
@@ -945,31 +927,42 @@ document.addEventListener('DOMContentLoaded', () => {
         canvas.height = 1080;
         const ctx = canvas.getContext('2d');
         const c = getCssVar;
-        
+
+        // Background
         const gradient = ctx.createLinearGradient(0, 0, 1080, 1080);
         gradient.addColorStop(0, c('--c-bg'));
         gradient.addColorStop(1, c('--c-surface'));
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, 1080, 1080);
 
+        // Title
         ctx.fillStyle = c('--c-text');
         ctx.font = `bold 60px ${c('--font-title')}`;
         ctx.textAlign = 'center';
         ctx.fillText(`${userInfo.nickname}'s Result`, 540, 120);
 
+        // Image
         const img = new Image();
         img.crossOrigin = "anonymous";
         const resultTypeData = DATA.results[result.finalSubtype];
-        img.src = `https://gpt-4-turbo-advanced.github.io/EgenTeto-Advanced-Test/images/${resultTypeData.imageFile}`;
+        
+        const imagePromise = new Promise((resolve, reject) => {
+            img.onload = () => resolve(img);
+            img.onerror = reject;
+            // Use a proxy or ensure images are served with correct CORS headers
+            // For GitHub Pages, this direct link should work if the repo is public
+            img.src = `https://gpt-4-turbo-advanced.github.io/EgenTeto-Advanced-Test/images/${resultTypeData.imageFile}`;
+        });
+
         try {
-            await img.decode();
-            ctx.drawImage(img, 390, 180, 300, 300);
+            const loadedImg = await imagePromise;
+            ctx.drawImage(loadedImg, 390, 180, 300, 300);
         } catch (e) {
             console.error("Image loading failed, drawing emoji instead.", e);
             ctx.font = '200px sans-serif';
             ctx.fillText(resultTypeData.emoji, 540, 320);
         }
-        
+
         ctx.fillStyle = c('--c-primary');
         ctx.font = `bold 80px ${c('--font-title')}`;
         ctx.fillText(resultTypeData.title[currentLang], 540, 520);
@@ -983,7 +976,7 @@ document.addEventListener('DOMContentLoaded', () => {
         new Chart(chartCanvas.getContext('2d'), {
             type: 'doughnut',
             data: {
-                labels: [`Egen ${result.percentage.egen}%`, `Teto ${result.percentage.teto}%`],
+                labels: [`Egen`, `Teto`],
                 datasets: [{
                     data: [result.percentage.egen, result.percentage.teto],
                     backgroundColor: [c('--c-primary'), c('--c-accent')],
@@ -992,13 +985,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     borderRadius: 10
                 }]
             },
-            options: { responsive: false, animation: { duration: 0 }, plugins: { legend: { display: false } }, cutout: '70%' }
+            options: {
+                responsive: false, animation: { duration: 0 }, plugins: { 
+                    legend: { display: false },
+                    datalabels: {
+                        color: '#fff', font: { weight: 'bold', size: 24 },
+                        formatter: (value, context) => `${value}%`
+                    }
+                }, cutout: '70%'
+            },
+            plugins: [ChartDataLabels]
         });
         
         await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-        
         ctx.drawImage(chartCanvas, 390, 620, 250, 250);
-
+        
         ctx.fillStyle = c('--c-text');
         ctx.textAlign = 'left';
         ctx.font = `bold 36px ${c('--font-main')}`;
@@ -1035,7 +1036,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return canvas.toDataURL('image/png');
     }
-    
+
     function updateHeader(screenName) {
         if (screenName === 'test') {
             header.progressContainer.classList.remove('hidden');
@@ -1208,7 +1209,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 datasets: [{
                     data: [result.percentage.egen, result.percentage.teto],
                     backgroundColor: [getCssVar('--c-primary'), getCssVar('--c-accent')],
-                    borderColor: getCssVar('--c-surface'),
+                    borderColor: getCssVar('--c-bg'),
                     borderWidth: 15,
                     borderRadius: 15,
                 }]
@@ -1216,17 +1217,19 @@ document.addEventListener('DOMContentLoaded', () => {
             options: { 
                 plugins: { 
                     legend: { display: false },
-                    // ⚠️ Datalabels 플러그인 설정
                     datalabels: {
-                        color: '#fff',
+                        color: (context) => context.dataset.backgroundColor[context.dataIndex] === getCssVar('--c-primary') ? '#fff' : '#fff',
                         font: {
+                            family: getCssVar('--font-main'),
                             weight: 'bold',
                             size: 16,
                         },
                         formatter: (value, context) => {
                             const label = context.chart.data.labels[context.dataIndex];
                             return `${label}\n${value}%`;
-                        }
+                        },
+                        textStrokeColor: 'rgba(0,0,0,0.2)',
+                        textStrokeWidth: 2
                     }
                 }, 
                 cutout: '65%' 
@@ -1312,7 +1315,6 @@ document.addEventListener('DOMContentLoaded', () => {
         setTheme(savedTheme, isDarkMode);
         setLanguage(DATA.lang[savedLang] ? savedLang : 'ko');
         
-        // Event Listeners
         userInfoForm.nickname.oninput = () => {
             currentUserInfo.nickname = userInfoForm.nickname.value.trim();
             validateUserInfo();
