@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>에겐/테토 성향 테스트 (최종 완성본)</title>
+    <meta name="description" content="나의 에겐/테토 성향과 숨겨진 궁합을 알아보세요! 144가지 조합의 정밀 분석과 나만의 결과 이미지까지.">
+    <meta property="og:title" content="에겐/테토 성향 테스트 (최종 완성본)">
+    <meta property="og:description" content="144가지 조합의 정밀 분석과 나만의 결과 이미지까지.">
+    <meta property="og:image" content="https://gpt-4-turbo-advanced.github.io/EgenTeto-Advanced-Test/og-image.png">
+    <meta property="og:url" content="https://gpt-4-turbo-advanced.github.io/EgenTeto-Advanced-Test/">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎭</text></svg>">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
+    <style>
+        /* CSS는 이전과 동일하므로 생략합니다. */
+        /* ... (이전과 동일한 CSS 코드) ... */
+        @import url('https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+        :root {
+            --font-main: 'Noto Sans KR', sans-serif;
+            --font-title: 'Jua', sans-serif;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-dark: rgba(0, 0, 0, 0.15);
+            --border-radius-md: 16px;
+            --border-radius-lg: 24px;
+            --transition-speed: 0.3s;
+        }
+
+        /* THEME SYSTEM */
+        body, body[data-theme='light-pink'] {
+            --c-primary: #FFB6C1; --c-secondary: #E6E6FA;
+            --c-accent: #1E90FF; --c-accent-light: #e8f4ff;
+            --c-bg: #F8F9FA; --c-surface: #FFFFFF;
+            --c-text: #343a40; --c-text-light: #868e96;
+            --c-border: #dee2e6;
+        }
+        body[data-theme='dark-blue'] {
+            --c-primary: #1E90FF; --c-secondary: #4a4e69;
+            --c-accent: #FFB6C1; --c-accent-light: #5e4a52;
+            --c-bg: #22223b; --c-surface: #2b2d42;
+            --c-text: #edf2f4; --c-text-light: #adb5bd;
+            --c-border: #4a4e69;
+        }
+        body[data-theme='mint-choco'] {
+            --c-primary: #66D2B3; --c-secondary: #4A2E2C;
+            --c-accent: #FFE8D6; --c-accent-light: #e0f2e9;
+            --c-bg: #F0FFF9; --c-surface: #FFFFFF;
+            --c-text: #4A2E2C; --c-text-light: #8C6A67;
+            --c-border: #B4E1D1;
+        }
+        body[data-theme='tangerine'] {
+            --c-primary: #FF7F50; --c-secondary: #FFF5E1;
+            --c-accent: #4682B4; --c-accent-light: #e8f4ff;
+            --c-bg: #FFF8F0; --c-surface: #FFFFFF;
+            --c-text: #593A27; --c-text-light: #9C7C68;
+            --c-border: #FFE4B5;
+        }
+        body.dark-mode {
+            --c-primary: #5865f2; --c-secondary: #4f545c;
+            --c-accent: #f0b90b; --c-accent-light: #494229;
+            --c-bg: #2f3136; --c-surface: #36393f;
+            --c-text: #dcddde; --c-text-light: #b9bbbe;
+            --c-border: #40444b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html, body { width: 100%; height: 100%; overflow: hidden; }
+        body {
+            font-family: var(--font-main);
+            background: var(--c-bg);
+            color: var(--c-text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background var(--transition-speed), color var(--transition-speed);
+        }
+        #app {
+            width: 100%; max-width: 500px;
+            height: 100%; max-height: 950px;
+            display: flex; flex-direction: column;
+            background: var(--c-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 10px 40px var(--shadow-dark);
+            overflow: hidden;
+            position: relative;
+        }
+        .screen {
+            width: 100%; height: 100%;
+            padding: 2rem 1.5rem;
+            display: flex; flex-direction: column;
+            text-align: center;
+            position: absolute; top: 0; left: 0;
+            opacity: 1;
+            transition: opacity var(--transition-speed) ease-in-out, transform var(--transition-speed) ease-in-out;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+        .screen::-webkit-scrollbar { display: none; }
+        .screen.hidden { opacity: 0; pointer-events: none; transform: scale(0.98); z-index: -1; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-10px); } }
+
+        .screen.active { animation: fadeIn 0.4s forwards; z-index: 10; }
+        .screen.inactive { animation: fadeOut 0.4s forwards; }
+        
+        /* HEADER CONTROLS */
+        .header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1rem 1.5rem;
+            z-index: 100;
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 36px;
+        }
+        #question-counter { font-size: 0.9rem; color: var(--c-text-light); font-weight: 500;}
+        #settings-btn {
+            background: transparent; border: none; font-size: 1.5rem; cursor: pointer; color: var(--c-text-light);
+        }
+        #progress-container { width: 100%; background: var(--c-border); border-radius: 20px; height: 10px; overflow: hidden; margin-top: 0.5rem; }
+        #progress-container.hidden { display: none; }
+        #progress-bar { width: 0%; height: 100%; background: var(--c-primary); border-radius: 20px; transition: width 0.4s ease; }
+
+        /* SETTINGS MODAL */
+        #settings-modal {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1001;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity var(--transition-speed);
+        }
+        #settings-modal.visible { opacity: 1; pointer-events: auto; }
+        .settings-content {
+            background: var(--c-surface);
+            padding: 2rem; border-radius: var(--border-radius-lg);
+            width: 90%; max-width: 400px;
+            box-shadow: 0 5px 20px var(--shadow-dark);
+            transform: scale(0.95);
+            transition: transform var(--transition-speed);
+        }
+        #settings-modal.visible .settings-content { transform: scale(1); }
+        .settings-section { margin-bottom: 1.5rem; text-align: left;}
+        .settings-section h3 { font-family: var(--font-title); color: var(--c-primary); margin-bottom: 1rem;}
+        #lang-switcher, #theme-options { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        #theme-options .theme-option { width: 36px; height: 36px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; }
+        #theme-options .theme-option.selected { border-color: var(--c-accent); }
+        #lang-switcher .lang-btn { flex-grow: 1; }
+
+        h1, h2 { font-family: var(--font-title); }
+        h1 { font-size: 2.2rem; color: var(--c-primary); margin-bottom: 0.5rem; }
+        p { font-size: 1rem; line-height: 1.6; color: var(--c-text-light); }
+        .main-btn {
+            font-family: var(--font-title);
+            background: linear-gradient(45deg, var(--c-primary), var(--c-accent));
+            color: white; border: none; border-radius: 50px;
+            padding: 0.9rem 2rem; font-size: 1.2rem; cursor: pointer;
+            margin-top: 1.5rem; transition: all var(--transition-speed);
+            box-shadow: 0 4px 15px color-mix(in srgb, var(--c-primary), transparent 60%);
+            flex-shrink: 0;
+        }
+        .main-btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 6px 20px color-mix(in srgb, var(--c-primary), transparent 50%); }
+        .main-btn:disabled { background: var(--c-border); color: var(--c-text-light); cursor: not-allowed; box-shadow: none; transform: none;}
+        .main-btn.secondary { background: transparent; border: 1px solid var(--c-primary); color: var(--c-primary); box-shadow: none; }
+        
+        /* SCREENS */
+        #user-info-screen { justify-content: center; gap: 1.2rem; padding-top: 4rem;}
+        .form-group { width: 100%; text-align: left; }
+        .form-group label { display: block; font-weight: 500; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--c-text-light); }
+        .form-group input[type="text"] {
+            width: 100%; padding: 0.8rem; border-radius: 10px; border: 1px solid var(--c-border);
+            background: var(--c-bg); color: var(--c-text); font-size: 1rem; transition: border-color var(--transition-speed);
+        }
+        .form-group input[type="text"]:focus { border-color: var(--c-primary); outline: none; }
+        .btn-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .choice-btn {
+            flex-grow: 1; padding: 0.7rem; border: 1px solid var(--c-border); border-radius: 10px;
+            background: transparent; color: var(--c-text); font-size: 0.9rem; cursor: pointer;
+            transition: all var(--transition-speed);
+        }
+        .choice-btn.selected { background: var(--c-primary); color: white; border-color: var(--c-primary); font-weight: bold; }
+        
+        #test-screen { padding-top: 6rem; justify-content: space-between; }
+        .question-content { margin-top: 1rem; }
+        #question-category { font-size: 0.9rem; color: var(--c-primary); font-weight: 500; margin-bottom: 0.5rem; height: 1.2em; }
+        #question-text { font-size: 1.4rem; font-weight: 700; min-height: 3.5em; display: flex; align-items: center; justify-content: center; }
+        #answer-options { display: flex; flex-direction: column; gap: 0.75rem; width: 100%; }
+        .answer-btn {
+            background: var(--c-bg); border: 2px solid transparent; border-radius: var(--border-radius-md);
+            padding: 1rem; font-size: 1rem; text-align: left; cursor: pointer;
+            transition: all var(--transition-speed);
+        }
+        .answer-btn:hover { border-color: var(--c-primary); transform: translateX(5px); }
+        .answer-btn.selected {
+            border-color: var(--c-primary); background: var(--c-accent-light);
+            animation: highlight 0.3s ease;
+        }
+        @keyframes highlight { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+        .test-footer { display: flex; justify-content: flex-start; width: 100%; margin-top: 1.5rem; }
+        .nav-btn { padding: 0.7rem 1.5rem; background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 10px; font-weight: 500; cursor: pointer; }
+        .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        #loading-screen { justify-content: center; align-items: center; }
+        .spinner {
+            width: 60px; height: 60px; border: 5px solid var(--c-border);
+            border-top-color: var(--c-primary); border-radius: 50%;
+            animation: spin 1s linear infinite; margin-bottom: 1rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        #result-screen { padding-bottom: 2rem; justify-content: flex-start; padding-top: 4rem; }
+        #result-header { width: 100%; margin-bottom: 1rem; }
+        #result-user-title { font-size: 1.8rem; margin: 0; }
+        .result-card { background: var(--c-bg); border-radius: var(--border-radius-md); padding: 1.5rem; margin-bottom: 1rem; }
+        #result-summary { display: flex; align-items: center; gap: 1.5rem; }
+        #result-emoji { font-size: 4rem; line-height: 1; }
+        #result-info { text-align: left; flex-grow: 1; }
+        #result-title { font-family: var(--font-title); font-size: 1.3rem; color: var(--c-text); margin: 0; }
+        #score-chart-container { width: 100%; max-width: 150px; margin: 1rem auto; }
+        #result-description { font-size: 0.95rem; text-align: left; margin-bottom: 1.5rem; white-space: pre-wrap; }
+        .result-section { margin-bottom: 1.5rem; }
+        .result-section h3 { font-family: var(--font-title); font-size: 1.1rem; color: var(--c-primary); margin-bottom: 0.75rem; text-align: left; border-left: 4px solid var(--c-accent); padding-left: 0.5rem; }
+        #feature-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .tag { background: var(--c-accent-light); color: var(--c-accent); padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.85rem; font-weight: 500; }
+        #compatibility-section { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .compat-card { background: var(--c-surface); padding: 1rem; border-radius: var(--border-radius-md); box-shadow: 0 2px 8px var(--shadow-light); }
+        .compat-card h4 { font-size: 1rem; }
+        .compat-card .type-name { font-size: 0.9rem; color: var(--c-text-light); }
+        .compat-card .score { font-family: var(--font-title); font-size: 1.8rem; }
+        .compat-card.best .score { color: #2ecc71; }
+        .compat-card.worst .score { color: #e74c3c; }
+
+        .result-actions { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; }
+        .result-actions .main-btn, .result-actions .main-btn.secondary { width: 100%; }
+        #share-buttons { display: flex; justify-content: center; gap: 1rem; }
+        .share-btn { width: 50px; height: 50px; border-radius: 50%; border: none; cursor: pointer; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
+        .share-btn:hover { transform: scale(1.1); }
+        
+        #history-screen { justify-content: flex-start; padding-top: 4rem; }
+        #history-list { width: 100%; display: flex; flex-direction: column; gap: 1rem; }
+        .history-item { background: var(--c-bg); padding: 1rem; border-radius: var(--border-radius-md); text-align: left; display: flex; justify-content: space-between; align-items: center; }
+        .history-info .type { font-weight: 700; font-size: 1.1rem; }
+        .history-info .date { font-size: 0.8rem; color: var(--c-text-light); }
+        .history-compare { width: 100%; margin-top: 1.5rem; }
+        #history-chart-container { width: 100%; }
+
+        @media (max-width: 500px) {
+            body { background: var(--c-surface); }
+            #app { border-radius: 0; max-height: none; height: 100vh; box-shadow: none; }
+            .screen { padding-top: 5rem; }
+            #user-info-screen, #history-screen, #result-screen { padding-top: 4rem; }
+        }
+
+        .toast {
+            position: fixed; bottom: 2rem; left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0,0,0,0.7);
+            color: white; padding: 0.8rem 1.5rem;
+            border-radius: 20px; z-index: 9999;
+            opacity: 0; transition: opacity 0.3s, bottom 0.3s;
+            animation: toast-in 0.3s forwards;
+        }
+        @keyframes toast-in { from { opacity: 0; bottom: 0; } to { opacity: 1; bottom: 2rem; } }
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="header-top">
+                <span id="question-counter"></span>
+                <button id="settings-btn" class="hidden">⚙️</button>
+            </div>
+            <div id="progress-container" class="hidden">
+                <div id="progress-bar"></div>
+            </div>
+        </div>
+
+        <!-- SETTINGS MODAL -->
+        <div id="settings-modal" class="hidden">
+            <div class="settings-content">
+                <div class="settings-section">
+                    <h3 data-lang="settings_theme">🎨 테마</h3>
+                    <div id="theme-options">
+                        <div class="theme-option" data-theme="light-pink" style="background: #FFB6C1;"></div>
+                        <div class="theme-option" data-theme="dark-blue" style="background: #1E90FF;"></div>
+                        <div class="theme-option" data-theme="mint-choco" style="background: #66D2B3;"></div>
+                        <div class="theme-option" data-theme="tangerine" style="background: #FF7F50;"></div>
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h3 data-lang="settings_mode">🌙 모드</h3>
+                    <button id="dark-mode-toggle" class="choice-btn"></button>
+                </div>
+                <div class="settings-section">
+                    <h3 data-lang="settings_lang">🌐 언어</h3>
+                    <div id="lang-switcher" class="btn-group">
+                        <button data-lang-code="ko" class="choice-btn lang-btn">한국어</button>
+                        <button data-lang-code="en" class="choice-btn lang-btn">English</button>
+                        <button data-lang-code="ja" class="choice-btn lang-btn">日本語</button>
+                        <button data-lang-code="zh" class="choice-btn lang-btn">中文</button>
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h3 data-lang="settings_history">📜 기록</h3>
+                     <button id="history-btn" class="choice-btn" data-lang="history_btn_text">테스트 기록 보기</button>
+                </div>
+                <button id="close-settings-btn" class="main-btn secondary" style="width:100%" data-lang="close_btn">닫기</button>
+            </div>
+        </div>
+
+        <!-- SCREENS -->
+        <section id="user-info-screen" class="screen active">
+            <h1>Egen/Teto</h1>
+            <p data-lang="userInfo_subtitle">정확한 결과 분석을 위해 당신에 대해 알려주세요.</p>
+            
+            <div class="form-group">
+                <label for="nickname" data-lang="nickname_label">닉네임 (필수)</label>
+                <input type="text" id="nickname" maxlength="10">
+            </div>
+            <div class="form-group">
+                <label data-lang="gender_label">성별 (필수)</label>
+                <div class="btn-group" id="gender-group">
+                    <button class="choice-btn" data-value="male">🙋‍♂️ 남성</button>
+                    <button class="choice-btn" data-value="female">🙋‍♀️ 여성</button>
+                    <button class="choice-btn" data-value="none">⚧️ 선택안함</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label data-lang="age_label">나이대 (선택)</label>
+                <div class="btn-group" id="age-group">
+                    <button class="choice-btn" data-value="10s">🧒 10대</button>
+                    <button class="choice-btn" data-value="20s">👨‍🎓 20대</button>
+                    <button class="choice-btn" data-value="30s">👩‍💼 30대</button>
+                    <button class="choice-btn" data-value="40s+">👨‍💻 40대+</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label data-lang="purpose_label">테스트 목적 (선택)</label>
+                <div class="btn-group" id="purpose-group">
+                    <button class="choice-btn" data-value="fun">😄 재미</button>
+                    <button class="choice-btn" data-value="self">🤔 자기탐구</button>
+                    <button class="choice-btn" data-value="love">💕 연애</button>
+                    <button class="choice-btn" data-value="friends">🤝 친구</button>
+                </div>
+            </div>
+            <button id="start-test-btn" class="main-btn" data-lang="start_btn" disabled>테스트 시작하기</button>
+        </section>
+
+        <section id="test-screen" class="screen hidden">
+            <div class="question-content">
+                <p id="question-category"></p>
+                <h2 id="question-text"></h2>
+            </div>
+            <div id="answer-options"></div>
+            <div class="test-footer">
+                <button id="prev-btn" class="nav-btn" data-lang="prev_btn">이전</button>
+            </div>
+        </section>
+
+        <section id="loading-screen" class="screen hidden">
+            <div class="spinner"></div>
+            <h2 data-lang="loading_title">결과 분석 중...</h2>
+            <p id="loading-text" data-lang="loading_text">당신의 성향을 144개 궁합 매트릭스와 대조하고 있습니다.</p>
+        </section>
+        
+        <section id="result-screen" class="screen hidden">
+            <div id="result-header">
+                <h1 id="result-user-title"></h1>
+                <p data-lang="result_subtitle">당신의 에겐/테토 성향 분석 결과입니다.</p>
+            </div>
+            <div class="result-card">
+                <div id="result-summary">
+                    <div id="result-emoji"></div>
+                    <div id="result-info">
+                        <h2 id="result-title"></h2>
+                        <p id="result-subtitle-text"></p>
+                    </div>
+                </div>
+                <div id="score-chart-container">
+                    <canvas id="score-chart"></canvas>
+                </div>
+            </div>
+            <div class="result-section">
+                <h3 data-lang="features_title">주요 특징</h3>
+                <div id="feature-tags"></div>
+            </div>
+            <div class="result-section">
+                <h3 data-lang="compat_title">💖 환상의 궁합 / 챌린지 궁합 💔</h3>
+                <div id="compatibility-section">
+                    <div class="compat-card best">
+                        <h4 data-lang="best_match">Best Match</h4>
+                        <p class="type-name" id="best-match-type"></p>
+                        <p class="score" id="best-match-score"></p>
+                    </div>
+                    <div class="compat-card worst">
+                        <h4 data-lang="worst_match">Challenge Match</h4>
+                        <p class="type-name" id="worst-match-type"></p>
+                        <p class="score" id="worst-match-score"></p>
+                    </div>
+                </div>
+                <p id="compat-desc" style="font-size:0.9rem; margin-top:1rem; text-align:left;"></p>
+            </div>
+             <div class="result-section">
+                <h3 data-lang="desc_title">상세 설명</h3>
+                <p id="result-description"></p>
+            </div>
+            <div class="result-section">
+                <h3 data-lang="advice_title">맞춤 조언</h3>
+                <p id="age-advice" style="font-size:0.9rem; text-align:left; background:var(--c-bg); padding:1rem; border-radius:10px;"></p>
+            </div>
+            <div class="result-actions">
+                <button id="generate-image-btn" class="main-btn" data-lang="generate_image_btn">이미지 생성 및 다운로드</button>
+                <div id="share-buttons">
+                    <button class="share-btn" id="kakao-share-btn" style="background-color: #FEE500;" title="카카오톡 공유">💬</button>
+                    <button class="share-btn" id="twitter-share-btn" style="background-color: #1DA1F2; color:white;" title="트위터 공유">🐦</button>
+                    <button class="share-btn" id="copy-link-btn" style="background-color: #7f8c8d; color:white;" title="링크 복사">🔗</button>
+                </div>
+                <button id="restart-btn" class="main-btn secondary" data-lang="restart_btn">🔄 다시 테스트하기</button>
+            </div>
+        </section>
+
+        <section id="history-screen" class="screen hidden">
+            <h1 data-lang="history_title">테스트 기록</h1>
+            <p data-lang="history_subtitle">나의 성향 변화를 확인해보세요.</p>
+            <div id="history-list"></div>
+            <div class="history-compare">
+                <h3 data-lang="history_compare_title">최근 2회 결과 비교</h3>
+                <div id="history-chart-container">
+                    <canvas id="history-chart"></canvas>
+                </div>
+            </div>
+            <button id="back-to-main-btn" class="main-btn" data-lang="close_btn">닫기</button>
+        </section>
+    </div>
+
+<script>
+const DATA = {
+    questions: [
+        { category: "emotion", q: { ko: "친구가 고민 상담을 요청했을 때 나는?", en: "When a friend asks for advice, I...", ja: "友達が悩み相談をしてきた時、私は？", zh: "当朋友来咨询烦恼时，我..." }, a: [
+            { text: { ko: "같이 울어주며 감정적으로 깊이 공감한다", en: "Cry with them, deeply empathizing emotionally.", ja: "一緒に泣いてあげて、感情的に深く共感する", zh: "和他们一起哭，在情感上深表同情" }, s: { e: 2, t: 0, st: 'pure' } },
+            { text: { ko: "문제의 핵심을 파악하고 논리적 해결책을 제시한다", en: "Grasp the problem's core and suggest a logical solution.", ja: "問題の核心を把握し、論理的な解決策を提示する", zh: "抓住问题的核心，提出合乎逻辑的解决方案" }, s: { e: 0, t: 2, st: 'leader' } },
+            { text: { ko: "끝까지 들어주며 곁을 지킨다", en: "Listen until the end and stay by their side.", ja: "最後まで話を聞いて、そばにいてあげる", zh: "倾听到最后，守护在他们身边" }, s: { e: 1, t: 0, st: 'kind' } },
+            { text: { ko: "객관적인 데이터나 사례를 들어 상황을 분석해준다", en: "Analyze the situation with objective data or examples.", ja: "客観的なデータや事例を挙げて状況を分析してあげる", zh: "用客观数据或案例来分析情况" }, s: { e: 0, t: 1, st: 'career' } }
+        ]},
+        { category: "emotion", q: { ko: "슬픈 영화를 볼 때 나의 반응은?", en: "My reaction when watching a sad movie is?", ja: "悲しい映画を観る時の私の反応は？", zh: "看悲伤的电影时我的反应是？" }, a: [
+            { text: { ko: "주인공에 몰입해 펑펑 운다", en: "I immerse myself in the main character and sob.", ja: "主人公に没入して号泣する", zh: "沉浸在主角身上，放声大哭" }, s: { e: 2, t: 0, st: 'classic' } },
+            { text: { ko: "연출이나 스토리의 개연성을 분석한다", en: "I analyze the directing or plot consistency.", ja: "演出やストーリーの蓋然性を分析する", zh: "分析导演手法或情节的连贯性" }, s: { e: 0, t: 2, st: 'leader' } },
+            { text: { ko: "마음이 찡하지만 눈물을 참는다", en: "My heart aches, but I hold back my tears.", ja: "胸がジーンとするが、涙はこらえる", zh: "心里难过，但忍住眼泪" }, s: { e: 1, t: 1, st: 'independent' } },
+            { text: { ko: "영화가 끝나고 조용히 여운을 즐긴다", en: "I quietly enjoy the afterglow when the movie ends.", ja: "映画が終わった後、静かに余韻を楽しむ", zh: "电影结束后，我静静地享受余味" }, s: { e: 1, t: 0, st: 'artist' } }
+        ]},
+        { category: "emotion", q: { ko: "기쁜 일이 있을 때 가장 먼저 하는 것은?", en: "What's the first thing I do when something good happens?", ja: "嬉しいことがあった時、最初にすることは？", zh: "有好事发生时，我首先会做什么？" }, a: [
+            { text: { ko: "가까운 사람들에게 바로 알리고 함께 기뻐한다", en: "Immediately tell my close ones and celebrate together.", ja: "親しい人々にすぐに知らせ、一緒に喜ぶ", zh: "立刻告诉亲近的人，一起庆祝" }, s: { e: 2, t: 0, st: 'kind' } },
+            { text: { ko: "성취의 원인을 분석하고 다음 목표를 세운다", en: "Analyze the cause of my achievement and set the next goal.", ja: "達成の原因を分析し、次の目標を立てる", zh: "分析我成功的原因，并设定下一个目标" }, s: { e: 0, t: 2, st: 'alpha' } },
+            { text: { ko: "나 자신에게 작은 선물을 하며 조용히 자축한다", en: "Quietly celebrate by giving myself a small gift.", ja: "自分自身に小さなプレゼントをして、静かに祝う", zh: "给自己一个小礼物，安静地庆祝" }, s: { e: 1, t: 1, st: 'independent' } },
+            { text: { ko: "이 기쁨을 어떻게 창의적으로 표현할지 고민한다", en: "Think about how to creatively express this joy.", ja: "この喜びをどう創造的に表現するかを考える", zh: "思考如何创造性地表达这份喜悦" }, s: { e: 1, t: 0, st: 'artist' } }
+        ]},
+        { category: "emotion", q: { ko: "화가 날 때 나는 어떻게 행동하나?", en: "How do I act when I'm angry?", ja: "腹が立った時、私はどう行動する？", zh: "我生气时会怎么做？" }, a: [
+            { text: { ko: "무엇 때문에 화가 났는지 차분히 설명하려 노력한다", en: "I try to calmly explain what made me angry.", ja: "何に腹を立てたのか、冷静に説明しようと努力する", zh: "我努力冷静地解释是什么让我生气" }, s: { e: 1, t: 1, st: 'healing' } },
+            { text: { ko: "문제를 해결하기 위해 직접적으로 분노를 표출한다", en: "I express my anger directly to solve the problem.", ja: "問題を解決するために、直接的に怒りを表出する", zh: "我直接表达我的愤怒以解决问题" }, s: { e: 0, t: 2, st: 'girlcrush' } },
+            { text: { ko: "혼자만의 시간을 가지며 감정을 삭힌다", en: "I spend time alone to process my emotions.", ja: "一人だけの時間を持ち、感情を整理する", zh: "我独处以消化我的情绪" }, s: { e: 2, t: 0, st: 'independent' } },
+            { text: { ko: "운동이나 다른 활동으로 화를 푼다", en: "I release my anger through exercise or other activities.", ja: "運動や他の活動で怒りを発散する", zh: "我通过运动或其他活动来释放我的愤怒" }, s: { e: 0, t: 1, st: 'sports' } }
+        ]},
+        { category: "emotion", q: { ko: "감정을 표현하는 나만의 방식은?", en: "What is my own way of expressing emotions?", ja: "感情を表現する私だけの方法は？", zh: "我表达情感的独特方式是什么？" }, a: [
+            { text: { ko: "글, 그림, 음악 등 창작 활동으로 표현한다", en: "Express through creative activities like writing, drawing, or music.", ja: "文、絵、音楽などの創作活動で表現する", zh: "通过写作、绘画或音乐等创作活动来表达" }, s: { e: 2, t: 0, st: 'artist' } },
+            { text: { ko: "신뢰하는 사람에게 솔직하게 털어놓는다", en: "Openly confide in someone I trust.", ja: "信頼する人に正直に打ち明ける", zh: "向我信任的人坦白" }, s: { e: 1, t: 0, st: 'pure' } },
+            { text: { ko: "감정보다는 행동과 결과로 보여준다", en: "Show it through actions and results rather than emotions.", ja: "感情より行動と結果で示す", zh: "通过行动和结果而不是情感来展示" }, s: { e: 0, t: 2, st: 'alpha' } },
+            { text: { ko: "주변 사람들을 챙겨주며 간접적으로 표현한다", en: "Express it indirectly by taking care of those around me.", ja: "周りの人々を気遣うことで間接的に表現する", zh: "通过照顾周围的人来间接表达" }, s: { e: 1, t: 1, st: 'maternal' } }
+        ]},
+        { category: "decision", q: { ko: "중요한 결정을 내릴 때 나는?", en: "When making an important decision, I...", ja: "重要な決断を下す時、私は？", zh: "做重要决定时，我..." }, a: [
+            { text: { ko: "나의 직감과 마음이 시키는 대로 한다", en: "Follow my intuition and what my heart tells me.", ja: "自分の直感と心が命じるままにする", zh: "跟随我的直觉和内心" }, s: { e: 2, t: 0, st: 'artist' } },
+            { text: { ko: "장단점을 철저히 분석하고 데이터를 기반으로 결정한다", en: "Thoroughly analyze pros and cons and decide based on data.", ja: "長所と短所を徹底的に分析し、データに基づいて決定する", zh: "彻底分析利弊，根据数据做决定" }, s: { e: 0, t: 2, st: 'leader' } },
+            { text: { ko: "주변 사람들의 의견을 충분히 듣고 참고한다", en: "Listen to and consider the opinions of those around me.", ja: "周りの人々の意見を十分に聞いて参考にする", zh: "充分听取并参考周围人的意见" }, s: { e: 1, t: 1, st: 'kind' } },
+            { text: { ko: "가장 안정적이고 리스크가 적은 선택을 한다", en: "Make the most stable and least risky choice.", ja: "最も安定的でリスクの少ない選択をする", zh: "做出最稳定、风险最小的选择" }, s: { e: 1, t: 0, st: 'maternal' } }
+        ]},
+        { category: "decision", q: { ko: "쇼핑할 때 물건을 고르는 기준은?", en: "My criteria for choosing items when shopping is?", ja: "買い物で物を選ぶ基準は？", zh: "我购物时选择物品的标准是？" }, a: [
+            { text: { ko: "나의 스타일에 딱 맞는 독특한 디자인", en: "A unique design that perfectly fits my style.", ja: "私のスタイルにぴったりのユニークなデザイン", zh: "完全符合我风格的独特设计" }, s: { e: 1, t: 1, st: 'girlcrush' } },
+            { text: { ko: "오래 쓸 수 있는 품질과 실용성", en: "Quality and practicality for long-term use.", ja: "長く使える品質と実用性", zh: "可长期使用的质量和实用性" }, s: { e: 0, t: 2, st: 'career' } },
+            { text: { ko: "나를 기분 좋게 만드는 예쁜 아이템", en: "A pretty item that makes me feel good.", ja: "私を良い気分にさせてくれる可愛いアイテム", zh: "让我心情愉悦的漂亮物品" }, s: { e: 2, t: 0, st: 'classic' } },
+            { text: { ko: "가성비와 다른 사람들의 좋은 후기", en: "Cost-effectiveness and good reviews from others.", ja: "コストパフォーマンスと他の人々の良いレビュー", zh: "性价比和别人的好评" }, s: { e: 0, t: 1, st: 'independent' } }
+        ]},
+        { category: "decision", q: { ko: "여행지를 정할 때 가장 중요한 것은?", en: "The most important thing when choosing a travel destination is?", ja: "旅行先を決める時、最も重要なことは？", zh: "选择旅游目的地时最重要的是？" }, a: [
+            { text: { ko: "아름다운 자연 속에서의 힐링과 휴식", en: "Healing and relaxation in beautiful nature.", ja: "美しい自然の中でのヒーリングと休息", zh: "在美丽的自然中疗愈和放松" }, s: { e: 2, t: 0, st: 'healing' } },
+            { text: { ko: "다양한 액티비티와 도전적인 경험", en: "Various activities and challenging experiences.", ja: "多様なアクティビティと挑戦的な経験", zh: "多样的活动和挑战性的体验" }, s: { e: 0, t: 2, st: 'sports' } },
+            { text: { ko: "현지 문화를 깊이 체험할 수 있는 기회", en: "Opportunities to deeply experience the local culture.", ja: "現地の文化を深く体験できる機会", zh: "深入体验当地文化的机会" }, s: { e: 1, t: 1, st: 'artist' } },
+            { text: { ko: "효율적인 동선과 잘 짜인 계획", en: "Efficient routes and a well-organized plan.", ja: "効率的な動線とよく練られた計画", zh: "高效的路线和精心组织的计划" }, s: { e: 0, t: 1, st: 'leader' } }
+        ]},
+        { category: "decision", q: { ko: "새로운 도전을 할 때 나의 스타일은?", en: "My style when taking on a new challenge is?", ja: "新しい挑戦をする時の私のスタイルは？", zh: "接受新挑战时我的风格是？" }, a: [
+            { text: { ko: "성공할 수 있다는 자신감을 갖고 바로 돌진한다", en: "Charge forward with confidence that I can succeed.", ja: "成功できるという自信を持って、すぐに突進する", zh: "怀着成功的自信勇往直前" }, s: { e: 0, t: 2, st: 'alpha' } },
+            { text: { ko: "실패의 가능성까지 고려하며 신중하게 계획한다", en: "Plan carefully, considering the possibility of failure.", ja: "失敗の可能性まで考慮し、慎重に計画する", zh: "仔细计划，考虑到失败的可能性" }, s: { e: 1, t: 1, st: 'career' } },
+            { text: { ko: "주변의 지지와 응원을 받으며 시작한다", en: "Start with the support and encouragement of those around me.", ja: "周りの支持と応援を受けながら始める", zh: "在周围人的支持和鼓励下开始" }, s: { e: 2, t: 0, st: 'kind' } },
+            { text: { ko: "남들이 하지 않는 나만의 방식으로 시도한다", en: "Try it in my own way that others don't.", ja: "他の人がしない自分だけの方法で試みる", zh: "用别人不用的我自己的方式尝试" }, s: { e: 1, t: 0, st: 'artist' } }
+        ]},
+        { category: "decision", q: { ko: "갈등 상황에서 나의 해결 방식은?", en: "My way of resolving conflict is?", ja: "対立状況での私の解決方法は？", zh: "我解决冲突的方式是？" }, a: [
+            { text: { ko: "논리적인 근거를 들어 상대를 설득한다", en: "Persuade the other person with logical reasoning.", ja: "論理的な根拠を挙げて相手を説得する", zh: "用逻辑推理说服对方" }, s: { e: 0, t: 2, st: 'leader' } },
+            { text: { ko: "최대한 갈등을 피하고 평화로운 해결책을 찾는다", en: "Avoid conflict as much as possible and find a peaceful solution.", ja: "できるだけ対立を避け、平和的な解決策を見つける", zh: "尽量避免冲突，寻找和平的解决方案" }, s: { e: 2, t: 0, st: 'healing' } },
+            { text: { ko: "한발 물러서서 상황을 객관적으로 보려고 한다", en: "Take a step back to view the situation objectively.", ja: "一歩引いて、状況を客観的に見ようとする", zh: "退一步客观地看待情况" }, s: { e: 1, t: 1, st: 'independent' } },
+            { text: { ko: "상대의 감정이 풀릴 때까지 기다리고 대화한다", en: "Wait for the other person's emotions to settle, then talk.", ja: "相手の感情が収まるまで待ってから対話する", zh: "等待对方情绪平复后再谈" }, s: { e: 1, t: 0, st: 'pure' } }
+        ]},
+        { category: "relationship", q: { ko: "새로운 사람들과 만날 때 나는?", en: "When meeting new people, I...", ja: "新しい人々と会う時、私は？", zh: "结识新朋友时，我..." }, a: [
+            { text: { ko: "먼저 다가가 말을 걸며 분위기를 주도한다", en: "Approach first and lead the atmosphere by talking.", ja: "まず近づいて話しかけ、雰囲気を主導する", zh: "主动上前搭话，主导气氛" }, s: { e: 0, t: 2, st: 'alpha' } },
+            { text: { ko: "상대방이 편안함을 느끼도록 미소와 함께 경청한다", en: "Listen with a smile so the other person feels comfortable.", ja: "相手が心地よく感じるように笑顔で傾聴する", zh: "微笑着倾听，让对方感到舒适" }, s: { e: 2, t: 0, st: 'healing' } },
+            { text: { ko: "나의 독특한 관심사를 이야기하며 공감대를 찾는다", en: "Talk about my unique interests to find common ground.", ja: "私のユニークな関心事を話して共感点を探す", zh: "谈论我独特的兴趣以寻找共同点" }, s: { e: 1, t: 1, st: 'artist' } },
+            { text: { ko: "조용히 관찰하며 나에게 말을 걸어주길 기다린다", en: "Quietly observe and wait for someone to talk to me.", ja: "静かに観察し、誰かが話しかけてくれるのを待つ", zh: "安静地观察，等待别人和我说话" }, s: { e: 1, t: 0, st: 'independent' } }
+        ]},
+        { category: "relationship", q: { ko: "친구들과의 모임에서 나의 역할은?", en: "My role in a gathering with friends is?", ja: "友達との集まりでの私の役割は？", zh: "在朋友聚会中我的角色是？" }, a: [
+            { text: { ko: "모임을 계획하고 이끄는 리더", en: "The leader who plans and leads the gathering.", ja: "集まりを計画し、リードするリーダー", zh: "计划和领导聚会的领导者" }, s: { e: 0, t: 2, st: 'leader' } },
+            { text: { ko: "모두를 챙기고 보살피는 엄마/아빠 역할", en: "The mom/dad role, taking care of everyone.", ja: "皆を気遣い、世話をするお母さん・お父さん役", zh: "妈妈/爸爸的角色，照顾每一个人" }, s: { e: 1, t: 1, st: 'maternal' } },
+            { text: { ko: "재미있는 이야기로 분위기를 띄우는 분위기 메이커", en: "The mood maker who lightens the atmosphere with fun stories.", ja: "面白い話で場を盛り上げるムードメーカー", zh: "用有趣的故事活跃气氛的氛围制造者" }, s: { e: 1, t: 0, st: 'kind' } },
+            { text: { ko: "말없이 친구들의 이야기를 들어주는 상담가", en: "The counselor who quietly listens to friends' stories.", ja: "黙って友達の話を聞いてあげるカウンセラー", zh: "安静地听朋友故事的顾问" }, s: { e: 2, t: 0, st: 'pure' } }
+        ]},
+        { category: "relationship", q: { ko: "의견 충돌이 있을 때 나는?", en: "When there's a conflict of opinion, I...", ja: "意見の衝突があった時、私は？", zh: "当意见冲突时，我..." }, a: [
+            { text: { ko: "나의 주장이 맞다는 것을 논리적으로 증명하려 한다", en: "Try to logically prove that my argument is correct.", ja: "私の主張が正しいことを論理的に証明しようとする", zh: "试图逻辑地证明我的论点是正确的" }, s: { e: 0, t: 2, st: 'alpha' } },
+            { text: { ko: "모두가 만족할 만한 절충안을 찾으려 노력한다", en: "Try to find a compromise that satisfies everyone.", ja: "皆が満足できる妥協案を見つけようと努力する", zh: "努力寻找一个能让所有人都满意的折衷方案" }, s: { e: 1, t: 1, st: 'kind' } },
+            { text: { ko: "상대방의 입장을 먼저 이해하려고 노력한다", en: "First, I try to understand the other person's perspective.", ja: "相手の立場をまず理解しようと努力する", zh: "我首先努力理解对方的观点" }, s: { e: 2, t: 0, st: 'healing' } },
+            { text: { ko: "내 의견과 다르면 일단 침묵한다", en: "If it's different from my opinion, I remain silent at first.", ja: "私の意見と異なれば、とりあえず沈黙する", zh: "如果与我的意见不同，我首先会保持沉默" }, s: { e: 1, t: 0, st: 'independent' } }
+        ]},
+        { category: "relationship", q: { ko: "타인을 평가할 때 중요하게 보는 것은?", en: "What I value when evaluating others is?", ja: "他人を評価する際に重要視することは？", zh: "评价他人时我重视的是？" }, a: [
+            { text: { ko: "그 사람의 능력과 성과", en: "Their abilities and achievements.", ja: "その人の能力と成果", zh: "他们的能力和成就" }, s: { e: 0, t: 2, st: 'career' } },
+            { text: { ko: "그 사람의 인성과 진실성", en: "Their character and sincerity.", ja: "その人の人柄と誠実さ", zh: "他们的人品和真诚" }, s: { e: 2, t: 0, st: 'pure' } },
+            { text: { ko: "나와의 가치관이 얼마나 잘 맞는가", en: "How well their values align with mine.", ja: "私との価値観がどれだけ合うか", zh: "他们的价值观与我的有多契合" }, s: { e: 1, t: 1, st: 'artist' } },
+            { text: { ko: "다른 사람들을 대하는 태도", en: "Their attitude towards other people.", ja: "他の人々に対する態度", zh: "他们对待他人的态度" }, s: { e: 1, t: 0, st: 'maternal' } }
+        ]},
+        { category: "relationship", q: { ko: "사람들과의 관계에서 가장 중요한 것은?", en: "The most important thing in relationships with people is?", ja: "人々との関係で最も重要なことは？", zh: "人际关系中最重要的是？" }, a: [
+            { text: { ko: "서로에 대한 깊은 신뢰", en: "Deep trust in each other.", ja: "お互いへの深い信頼", zh: "彼此间的深度信任" }, s: { e: 1, t: 1, st: 'maternal' } },
+            { text: { ko: "솔직하고 꾸밈없는 감정 교류", en: "Honest and unadorned emotional exchange.", ja: "率直で飾らない感情の交流", zh: "坦率、不加修饰的情感交流" }, s: { e: 2, t: 0, st: 'classic' } },
+            { text: { ko: "각자의 독립성과 개인 영역 존중", en: "Respect for each other's independence and personal space.", ja: "各自の独立性と個人的領域の尊重", zh: "尊重彼此的独立性和个人空间" }, s: { e: 0, t: 1, st: 'independent' } },
+            { text: { ko: "함께 성장하고 발전하는 것", en: "Growing and developing together.", ja: "共に成長し、発展すること", zh: "共同成长和发展" }, s: { e: 0, t: 2, st: 'career' } }
+        ]},
+        { category: "stress", q: { ko: "스트레스를 받을 때 나는?", en: "When I'm stressed, I...", ja: "ストレスを感じた時、私は？", zh: "当我感到压力时，我..." }, a: [
+            { text: { ko: "땀 흘리며 격렬하게 운동한다", en: "Work out intensely and break a sweat.", ja: "汗を流して激しく運動する", zh: "激烈运动，大汗淋漓" }, s: { e: 0, t: 2, st: 'sports' } },
+            { text: { ko: "친구와 만나서 수다를 떤다", en: "Meet up with a friend and chat.", ja: "友達に会っておしゃべりをする", zh: "和朋友见面聊天" }, s: { e: 2, t: 0, st: 'kind' } },
+            { text: { ko: "혼자 조용한 곳에서 휴식을 취한다", en: "Rest alone in a quiet place.", ja: "一人で静かな場所で休息を取る", zh: "独自在安静的地方休息" }, s: { e: 1, t: 1, st: 'healing' } },
+            { text: { ko: "문제 해결에 집중하며 스트레스의 원인을 없앤다", en: "Focus on problem-solving to eliminate the source of stress.", ja: "問題解決に集中し、ストレスの原因を取り除く", zh: "专注于解决问题，消除压力源" }, s: { e: 0, t: 1, st: 'leader' } }
+        ]},
+        { category: "stress", q: { ko: "압박감을 느낄 때 나의 대응은?", en: "My response when feeling pressured is?", ja: "プレッシャーを感じた時の私の対応は？", zh: "感到压力时我的反应是？" }, a: [
+            { text: { ko: "이겨내기 위해 오히려 더 자신을 몰아붙인다", en: "Push myself even harder to overcome it.", ja: "乗り越えるために、むしろ自分を追い込む", zh: "为了克服它，我更加努力地逼自己" }, s: { e: 0, t: 2, st: 'alpha' } },
+            { text: { ko: "주변 사람들에게 도움을 요청하고 함께 해결한다", en: "Ask for help from those around me and solve it together.", ja: "周りの人々に助けを求め、一緒に解決する", zh: "向周围的人求助，一起解决" }, s: { e: 1, t: 1, st: 'kind' } },
+            { text: { ko: "압박감에서 벗어나기 위해 잠시 다른 일에 몰두한다", en: "Immerse myself in something else for a while to escape the pressure.", ja: "プレッシャーから逃れるために、一時的に他のことに没頭する", zh: "暂时沉浸在别的事情中以逃避压力" }, s: { e: 1, t: 0, st: 'artist' } },
+            { text: { ko: "체계적인 계획을 세워 압박감을 관리한다", en: "Manage the pressure by making a systematic plan.", ja: "体系的な計画を立てて、プレッシャーを管理する", zh: "制定系统性计划来管理压力" }, s: { e: 0, t: 1, st: 'career' } }
+        ]},
+        { category: "stress", q: { ko: "힘든 상황에서 나를 지탱하는 것은?", en: "What supports me in difficult situations?", ja: "困難な状況で私を支えるものは？", zh: "在困难情况下支持我的是什么？" }, a: [
+            { text: { ko: "나를 믿어주는 사람들의 존재", en: "The existence of people who believe in me.", ja: "私を信じてくれる人々の存在", zh: "相信我的人的存在" }, s: { e: 2, t: 0, st: 'pure' } },
+            { text: { ko: "반드시 해내고야 말겠다는 나의 의지", en: "My will to succeed no matter what.", ja: "必ずやり遂げるという私の意志", zh: "我无论如何都要成功的意志" }, s: { e: 0, t: 2, st: 'alpha' } },
+            { text: { ko: "언젠가 좋아질 것이라는 긍정적인 믿음", en: "A positive belief that things will get better someday.", ja: "いつか良くなるという肯定的な信念", zh: "事情总会好转的积极信念" }, s: { e: 1, t: 0, st: 'healing' } },
+            { text: { ko: "상황을 해결할 수 있다는 나의 능력에 대한 믿음", en: "Belief in my ability to resolve the situation.", ja: "状況を解決できるという自分の能力への信頼", zh: "相信我有能力解决问题" }, s: { e: 0, t: 1, st: 'girlcrush' } }
+        ]},
+        { category: "hobby", q: { ko: "주말에 가장 하고 싶은 활동은?", en: "The activity I most want to do on the weekend is?", ja: "週末に最もしたい活動は？", zh: "周末最想做的活动是？" }, a: [
+            { text: { ko: "집에서 편안하게 영화나 드라마 정주행", en: "Binge-watching movies or dramas comfortably at home.", ja: "家で快適に映画やドラマを一気見する", zh: "在家舒适地追剧或看电影" }, s: { e: 2, t: 0, st: 'healing' } },
+            { text: { ko: "친구들과 만나 스포츠나 게임 즐기기", en: "Meeting friends to enjoy sports or games.", ja: "友達と会ってスポーツやゲームを楽しむ", zh: "和朋友见面享受运动或游戏" }, s: { e: 0, t: 2, st: 'sports' } },
+            { text: { ko: "미술관, 콘서트 등 문화생활 즐기기", en: "Enjoying cultural activities like museums or concerts.", ja: "美術館やコンサートなど、文化生活を楽しむ", zh: "享受博物馆或音乐会等文化活动" }, s: { e: 1, t: 1, st: 'classic' } },
+            { text: { ko: "평소 관심 있던 분야의 스터디나 자기계발", en: "Studying or self-development in a field I'm interested in.", ja: "普段から興味のあった分野の勉強や自己啓発", zh: "在我感兴趣的领域学习或自我发展" }, s: { e: 0, t: 1, st: 'career' } }
+        ]},
+        { category: "hobby", q: { ko: "새로운 취미를 선택할 때 기준은?", en: "My criteria when choosing a new hobby is?", ja: "新しい趣味を選ぶ時の基準は？", zh: "我选择新爱好的标准是？" }, a: [
+            { text: { ko: "나의 창의성을 발휘할 수 있는가", en: "Whether I can express my creativity.", ja: "私の創造性を発揮できるかどうか", zh: "是否能发挥我的创造力" }, s: { e: 2, t: 0, st: 'artist' } },
+            { text: { ko: "나의 성장에 도움이 되는가", en: "Whether it helps my personal growth.", ja: "私の成長に役立つかどうか", zh: "是否对我的个人成长有帮助" }, s: { e: 0, t: 2, st: 'career' } },
+            { text: { ko: "다른 사람들과 함께 즐길 수 있는가", en: "Whether I can enjoy it with other people.", ja: "他の人々と一緒に楽しめるかどうか", zh: "是否能和别人一起享受" }, s: { e: 1, t: 1, st: 'kind' } },
+            { text: { ko: "나의 건강과 체력 증진에 도움이 되는가", en: "Whether it helps improve my health and fitness.", ja: "私の健康と体力増進に役立つかどうか", zh: "是否有助于改善我的健康和体能" }, s: { e: 0, t: 1, st: 'sports' } }
+        ]},
+        { category: "hobby", q: { ko: "혼자만의 시간을 보내는 방법은?", en: "How do I spend my alone time?", ja: "一人だけの時間の過ごし方は？", zh: "我如何度过独处时光？" }, a: [
+            { text: { ko: "좋아하는 음악을 들으며 명상하거나 사색에 잠긴다", en: "Meditate or get lost in thought while listening to favorite music.", ja: "好きな音楽を聴きながら瞑想したり、思索にふける", zh: "听着喜欢的音乐冥想或沉思" }, s: { e: 2, t: 0, st: 'healing' } },
+            { text: { ko: "나만의 프로젝트나 사이드 잡에 몰두한다", en: "Immerse myself in my own project or side job.", ja: "自分だけのプロジェクトやサイドジョブに没頭する", zh: "沉浸在我自己的项目或副业中" }, s: { e: 0, t: 2, st: 'career' } },
+            { text: { ko: "평소 가보고 싶었던 낯선 곳을 탐험한다", en: "Explore an unfamiliar place I've always wanted to visit.", ja: "普段から行ってみたかった見知らぬ場所を探検する", zh: "探索一个我一直想去的陌生地方" }, s: { e: 1, t: 1, st: 'girlcrush' } },
+            { text: { ko: "아무것도 하지 않고 완벽한 '쉼'을 즐긴다", en: "Enjoy a perfect 'rest' by doing nothing at all.", ja: "何もしないで完璧な「休息」を楽しむ", zh: "什么都不做，享受完美的“休息”" }, s: { e: 1, t: 0, st: 'pure' } }
+        ]},
+        { category: "hobby", q: { ko: "에너지를 충전하는 나만의 방법은?", en: "My own way to recharge my energy is?", ja: "エネルギーを充電する私だけの方法は？", zh: "我给自己充电的独特方式是？" }, a: [
+            { text: { ko: "사랑하는 사람들과 맛있는 음식을 먹으며 대화하기", en: "Talking with loved ones over delicious food.", ja: "愛する人々と美味しい食事をしながら会話する", zh: "和心爱的人一边吃美食一边聊天" }, s: { e: 2, t: 0, st: 'maternal' } },
+            { text: { ko: "성취감을 느낄 수 있는 목표를 달성하기", en: "Achieving a goal that gives me a sense of accomplishment.", ja: "達成感を感じられる目標を達成する", zh: "实现一个能给我成就感的目标" }, s: { e: 0, t: 2, st: 'alpha' } },
+            { text: { ko: "자연 속에서 산책하거나 풍경을 감상하기", en: "Walking in nature or admiring the scenery.", ja: "自然の中を散歩したり、風景を鑑賞する", zh: "在自然中散步或欣赏风景" }, s: { e: 1, t: 0, st: 'healing' } },
+            { text: { ko: "새로운 지식이나 기술을 배우기", en: "Learning new knowledge or skills.", ja: "新しい知識や技術を学ぶ", zh: "学习新知识或技能" }, s: { e: 0, t: 1, st: 'leader' } }
+        ]},
+        { category: "love", q: { ko: "이상적인 데이트는?", en: "An ideal date is?", ja: "理想的なデートは？", zh: "理想的约会是？" }, a: [
+            { text: { ko: "서로의 취향이 담긴 아늑한 공간에서 나누는 깊은 대화", en: "Deep conversation in a cozy space that reflects our tastes.", ja: "お互いの好みが詰まった居心地の良い空間で交わす深い会話", zh: "在我们品味相投的舒适空间里进行深度对话" }, s: { e: 2, t: 0, st: 'classic' } },
+            { text: { ko: "함께 새로운 것을 배우거나 도전하는 활동적인 데이트", en: "An active date, learning or challenging something new together.", ja: "一緒に新しいことを学んだり、挑戦したりする活動的なデート", zh: "一起学习或挑战新事物的活跃约会" }, s: { e: 0, t: 2, st: 'sports' } },
+            { text: { ko: "즉흥적으로 떠나는 자유로운 여행", en: "A spontaneous and free-spirited trip.", ja: "即興で出かける自由な旅行", zh: "一场说走就走的自由旅行" }, s: { e: 1, t: 1, st: 'artist' } },
+            { text: { ko: "서로의 성장에 도움이 되는 건설적인 시간을 보내는 것", en: "Spending constructive time that helps each other grow.", ja: "お互いの成長に役立つ建設的な時間を過ごすこと", zh: "度过有助于彼此成长的建设性时间" }, s: { e: 0, t: 1, st: 'career' } }
+        ]},
+        { category: "love", q: { ko: "연인과의 갈등을 해결하는 방식은?", en: "How I resolve conflicts with my partner is?", ja: "恋人との対立を解決する方法は？", zh: "我如何解决与伴侣的冲突？" }, a: [
+            { text: { ko: "상대방의 감정을 먼저 살피고 공감하려고 노력한다", en: "I try to understand and empathize with my partner's feelings first.", ja: "相手の感情をまず察し、共感しようと努力する", zh: "我首先尝试理解和共情我伴侣的感受" }, s: { e: 2, t: 0, st: 'pure' } },
+            { text: { ko: "문제를 직시하고 이성적인 해결책을 함께 찾는다", en: "Face the problem head-on and find a rational solution together.", ja: "問題を直視し、理性的な解決策を一緒に見つける", zh: "直面问题，共同寻找理性的解决方案" }, s: { e: 0, t: 2, st: 'leader' } },
+            { text: { ko: "각자 생각할 시간을 가진 후 다시 이야기한다", en: "Talk again after we've both had time to think.", ja: "それぞれが考える時間を持った後、再び話し合う", zh: "我们各自思考一段时间后再谈" }, s: { e: 1, t: 1, st: 'independent' } },
+            { text: { ko: "애정 표현이나 스킨십으로 어색한 분위기를 푼다", en: "Break the awkward atmosphere with affection or physical touch.", ja: "愛情表現やスキンシップで気まずい雰囲気をほぐす", zh: "通过示爱或身体接触来打破尴尬的气氛" }, s: { e: 1, t: 0, st: 'classic' } }
+        ]},
+        { category: "love", q: { ko: "사랑에서 가장 중요하다고 생각하는 것은?", en: "The most important thing in love is?", ja: "愛において最も重要だと思うことは？", zh: "爱情中最重要的是什么？" }, a: [
+            { text: { ko: "정서적 안정감과 깊은 유대감", en: "Emotional stability and a deep bond.", ja: "情緒的な安定感と深い絆", zh: "情感上的稳定和深刻的联结" }, s: { e: 2, t: 0, st: 'maternal' } },
+            { text: { ko: "서로에 대한 열정과 끊임없는 설렘", en: "Passion for each other and constant excitement.", ja: "お互いへの情熱と絶え間ないときめき", zh: "对彼此的热情和持续的心动" }, s: { e: 1, t: 1, st: 'girlcrush' } },
+            { text: { ko: "같은 미래를 바라보며 함께 나아가는 것", en: "Moving forward together, looking towards the same future.", ja: "同じ未来を見つめ、共に進むこと", zh: "朝着同一个未来，共同前进" }, s: { e: 0, t: 2, st: 'alpha' } },
+            { text: { ko: "있는 그대로의 모습을 사랑하고 존중하는 것", en: "Loving and respecting each other for who we are.", ja: "ありのままの姿を愛し、尊重すること", zh: "爱并尊重彼此本来的样子" }, s: { e: 1, t: 0, st: 'healing' } }
+        ]},
+    ],
+    results: {
+        'pure': {
+            emoji: '🦌',
+            title: { ko: '순수 에겐남', en: 'Pure Egen Man', ja: '純粋エゲン男', zh: '纯粹艾根男' },
+            subtitle: { ko: '감성 남친의 정석', en: 'The Essence of a Sensitive BF', ja: '感性彼氏の定石', zh: '感性男友的典范' },
+            description: {
+                ko: '섬세한 감수성과 다정한 마음을 가진 당신은 주변 사람들에게 따뜻한 위로와 안정감을 주는 존재입니다. 타인의 감정을 자신의 것처럼 느끼는 깊은 공감 능력은 당신의 가장 큰 장점이며, 이는 당신을 신뢰할 수 있는 친구이자 연인으로 만들어줍니다. 갈등 상황을 회피하려는 경향이 있지만, 이는 관계의 평화를 지키려는 당신의 본성 때문입니다. 예술적인 분야에 대한 관심이 많고, 아름다운 것들을 보며 감동을 느끼는 순수한 영혼의 소유자입니다. 때로는 현실적인 문제 앞에서 약한 모습을 보일 수 있지만, 당신의 진심과 따뜻함은 그 어떤 어려움도 녹일 수 있는 강력한 힘을 가지고 있습니다. 당신의 존재 자체만으로도 사람들은 치유를 받습니다. \n\n❤️ 연애 스타일: 연인의 감정을 최우선으로 생각하며, 안정적이고 헌신적인 사랑을 합니다. 작은 것에도 감동하며, 진심이 담긴 애정 표현을 중요하게 생각합니다. \n\n💼 추천 직업: 상담사, 사회복지사, 교사, 작가, 예술 치료사 \n\n⭐ 성장 포인트: 때로는 자신의 감정보다 문제의 본질을 직시하고, 당신의 의견을 좀 더 단단하게 표현하는 연습이 필요합니다.',
+                en: 'With delicate sensitivity and a kind heart, you are a being who provides warm comfort and stability to those around you. Your greatest strength is a deep empathy that allows you to feel others\' emotions as if they were your own, making you a trustworthy friend and partner. You tend to avoid conflict, but this stems from your inherent nature to maintain peace in relationships. You have a great interest in artistic fields and possess a pure soul that is moved by beautiful things. While you may sometimes show weakness in the face of practical problems, your sincerity and warmth are powerful forces capable of melting away any difficulty. Your very presence is healing to people. \n\n❤️ Love Style: You prioritize your partner\'s emotions and offer a stable, devoted love. You are moved by small gestures and value sincere expressions of affection. \n\n💼 Recommended Jobs: Counselor, Social Worker, Teacher, Writer, Art Therapist \n\n⭐ Growth Point: Sometimes, you need to practice facing the essence of a problem rather than just your emotions, and expressing your opinions more firmly.',
+                ja: '繊細な感受性と優しい心を持つあなたは、周りの人々に温かい慰めと安定感を与える存在です。他人の感情を自分のことのように感じる深い共感能力は、あなたの最大の長所であり、信頼できる友人であり恋人であることを示しています。対立状況を避けようとする傾向がありますが、それは関係の平和を守ろうとするあなたの本性のためです。芸術的な分野への関心が高く、美しいものを見て感動する純粋な魂の持ち主です。時には現実的な問題の前で弱い姿を見せることもありますが、あなたの真心と温かさは、どんな困難も溶かすことのできる強力な力を持っています。あなたの存在そのものが、人々を癒します。\n\n❤️恋愛スタイル：恋人の感情を最優先に考え、安定的で献身的な愛を捧げます。些細なことにも感動し、心のこもった愛情表現を大切にします。\n\n💼おすすめの職業：カウンセラー、社会福祉士、教師、作家、アートセラピスト\n\n⭐成長ポイント：時には自分の感情よりも問題の本質を直視し、自分の意見をよりしっかりと表現する練習が必要です。',
+                zh: '你拥有细腻的感受力和温柔的心，是给周围人带来温暖安慰和稳定感的存在。你最大的优点是能深刻地感受到他人的情感，仿佛是自己的情感一样，这使你成为一个值得信赖的朋友和伴侣。你倾向于回避冲突，但这源于你维护关系和平的本性。你对艺术领域有浓厚的兴趣，拥有一颗被美好事物感动的纯洁灵魂。虽然在现实问题面前你有时会显得软弱，但你的真诚和温暖是能够融化任何困难的强大力量。你的存在本身就能治愈他人。\n\n❤️ 恋爱风格：你优先考虑伴侣的情感，并提供稳定、忠诚的爱。你会被小事感动，并重视真诚的情感表达。\n\n💼 推荐职业：顾问、社会工作者、教师、作家、艺术治疗师\n\n⭐ 成长点：有时，你需要练习面对问题的本质而不是仅仅是你的情绪，并更坚定地表达你的观点。'
+            },
+            features: [
+                { emoji: '💬', text: { ko: '깊은 공감능력', en: 'Deep Empathy', ja: '深い共感能力', zh: '深度共情' } },
+                { emoji: '🥰', text: { ko: '다정하고 친절함', en: 'Affectionate & Kind', ja: '優しくて親切', zh: '亲切友善' } },
+                { emoji: '🕊️', text: { ko: '평화주의자', en: 'Pacifist', ja: '平和主義者', zh: '和平主义者' } },
+                { emoji: '🌿', text: { ko: '섬세한 감수성', en: 'Delicate Sensitivity', ja: '繊細な感受性', zh: '细腻的感受力' } }
+            ]
+        },
+        'artist': {
+            emoji: '🐰',
+            title: { ko: '아티스트 에겐남', en: 'Artist Egen Man', ja: 'アーティストエゲン男', zh: '艺术家艾根男' },
+            subtitle: { ko: '크리에이티브 보이프렌드', en: 'The Creative Boyfriend', ja: 'クリエイティブな彼氏', zh: '创意型男友' },
+            description: {
+                ko: '독창적인 아이디어와 예술적 감각이 뛰어난 당신. 자신만의 세계가 확고하며, 세상을 새로운 시각으로 바라봅니다. 틀에 박힌 것을 싫어하고 자유로운 영혼을 가진 당신은 늘 새로운 영감을 찾아 헤맵니다. 때로는 엉뚱하고 예측 불가능한 모습으로 주변을 놀라게 하지만, 그것이 바로 당신의 치명적인 매력입니다. 감정의 기복이 있을 수 있지만, 당신의 풍부한 내면세계는 다른 사람들에게 신선한 자극과 즐거움을 선사합니다. 당신과 함께라면 평범한 일상도 한 편의 영화가 됩니다.\n\n❤️ 연애 스타일: 틀에 박힌 데이트보다 함께 새로운 경험을 하는 것을 즐깁니다. 연인에게 예술적 영감을 주기도 하고, 받기도 하는 관계를 선호합니다. 당신의 독특함을 이해해주는 파트너가 필요합니다.\n\n💼 추천 직업: 디자이너, 작곡가, 영화감독, 기획자, 발명가\n\n⭐ 성장 포인트: 당신의 창의적인 아이디어를 현실로 만들기 위한 구체적인 계획과 실행력을 기르는 것이 중요합니다. 때로는 현실과 타협하는 지혜도 필요합니다.',
+                en: 'You have outstanding original ideas and artistic sense. You have a firm personal world and see the world from a fresh perspective. You dislike conformity and, as a free spirit, you are always searching for new inspiration. Sometimes you surprise those around you with your quirky and unpredictable behavior, but that is precisely your fatal charm. You may have emotional ups and downs, but your rich inner world provides fresh stimulation and joy to others. With you, even an ordinary day becomes a scene from a movie.\n\n❤️ Love Style: You enjoy having new experiences together rather than conventional dates. You prefer a relationship where you give and receive artistic inspiration from your partner. You need a partner who understands your uniqueness.\n\n💼 Recommended Jobs: Designer, Composer, Film Director, Planner, Inventor\n\n⭐ Growth Point: It\'s important to develop concrete plans and execution skills to bring your creative ideas to reality. Sometimes, the wisdom to compromise with reality is also necessary.',
+                ja: '独創的なアイデアと芸術的感覚が優れたあなた。自分だけの世界が確立しており、世界を新しい視点で見つめます。型にはまることを嫌い、自由な魂を持つあなたは、常に新しいインスピレーションを探し求めています。時には突飛で予測不可能な姿で周りを驚かせますが、それこそがあなたの致命的な魅力です。感情の起伏があるかもしれませんが、あなたの豊かな内面世界は他の人々に新鮮な刺激と楽しみを提供します。あなたと一緒なら、平凡な日常も一本の映画のようになります。\n\n❤️恋愛スタイル：型にはまったデートよりも、一緒に新しい経験をすることを楽しんでいます。恋人に芸術的なインスピレーションを与えたり、受けたりする関係を好みます。あなたのユニークさを理解してくれるパートナーが必要です。\n\n💼おすすめの職業：デザイナー、作曲家、映画監督、企画者、発明家\n\n⭐成長ポイント：あなたの創造的なアイデアを現実に変えるための具体的な計画と実行力を養うことが重要です。時には現実と妥協する知恵も必要です。',
+                zh: '你拥有出色的原创想法和艺术感。你有一个坚定的个人世界，并以全新的视角看待世界。你讨厌墨守成规，作为一个自由的灵魂，你总是在寻找新的灵感。有时你会因为古怪和不可预测的行为让周围的人感到惊讶，但这正是你致命的魅力所在。你可能会有情绪波动，但你丰富的内心世界为他人提供了新鲜的刺激和快乐。和你在一起，即使是平凡的一天也变成了电影中的一幕。\n\n❤️ 恋爱风格：你喜欢一起体验新事物，而不是传统的约会。你更喜欢一种能够从伴侣那里给予和接受艺术灵感的关系。你需要一个能理解你独特之处的伴侣。\n\n💼 推荐职业：设计师、作曲家、电影导演、策划师、发明家\n\n⭐ 成长点：培养具体的计划和执行能力，将你的创意变为现实非常重要。有时，与现实妥协的智慧也是必要的。'
+            },
+            features: [
+                { emoji: '✨', text: { ko: '넘치는 창의력', en: 'Overflowing Creativity', ja: '溢れる創造力', zh: '创造力爆棚' } },
+                { emoji: '🎨', text: { ko: '예술가 기질', en: 'Artistic Temperament', ja: '芸術家気質', zh: '艺术家气质' } },
+                { emoji: '👽', text: { ko: '독특한 매력', en: 'Unique Charm', ja: 'ユニークな魅力', zh: '独特魅力' } },
+                { emoji: '🍃', text: { ko: '자유로운 영혼', en: 'Free Spirit', ja: '自由な魂', zh: '自由的灵魂' } }
+            ]
+        },
+        'kind': {
+            emoji: '🐕',
+            title: { ko: '다정 에겐남', en: 'Kind Egen Man', ja: '優しいエゲン男', zh: '亲切艾根男' },
+            subtitle: { ko: '국민 남친상', en: 'The National Boyfriend Type', ja: '国民的彼氏像', zh: '国民男友型' },
+            description: {
+                ko: '책임감이 강하고 헌신적인 당신은 곁에 있는 사람들을 살뜰히 챙기는 사람입니다. 늘 긍정적인 에너지를 뿜어내며, 함께 있으면 마음이 편안해지는 매력을 가졌습니다. 다른 사람의 행복에서 자신의 행복을 느끼는 이타적인 성향이 강하며, 부탁을 거절하는 것을 어려워하기도 합니다. 당신의 따뜻함과 배려는 주변에 늘 사람들이 모이게 만듭니다. 안정적인 관계를 추구하며, 한번 인연을 맺으면 오랫동안 소중히 여기는 의리파입니다.\n\n❤️ 연애 스타일: 연인을 위해 헌신하는 것을 기쁨으로 생각합니다. 안정적이고 편안한 관계를 선호하며, 갈등을 만들기보다 양보하고 이해하려 노력합니다. 서프라이즈보다는 일상 속 작은 배려로 사랑을 표현합니다.\n\n💼 추천 직업: 서비스직, 간호사, 수의사, 유치원 교사, 인사담당자\n\n⭐ 성장 포인트: 때로는 다른 사람의 부탁을 거절할 용기가 필요합니다. 자신의 욕구와 감정도 소중히 여기고, 스스로를 먼저 챙기는 법을 배워야 합니다.',
+                en: 'Strongly responsible and devoted, you are someone who takes good care of the people by your side. You always radiate positive energy and have a charm that makes others feel at ease. You have a strong altruistic tendency, finding your own happiness in the happiness of others, and you may find it difficult to refuse requests. Your warmth and consideration always draw people to you. You seek stable relationships and are a loyal person who cherishes connections for a long time.\n\n❤️ Love Style: You find joy in dedicating yourself to your partner. You prefer stable and comfortable relationships and try to yield and understand rather than create conflict. You express love through small, everyday acts of kindness rather than surprises.\n\n💼 Recommended Jobs: Service Industry, Nurse, Veterinarian, Kindergarten Teacher, HR Manager\n\n⭐ Growth Point: Sometimes you need the courage to refuse others\' requests. You must learn to cherish your own needs and emotions and to take care of yourself first.',
+                ja: '責任感が強く献身的なあなたは、そばにいる人々を大切にする人です。常にポジティブなエネルギーを放ち、一緒にいると心が安らぐ魅力を持っています。他人の幸福に自分の幸福を感じる利他的な傾向が強く、頼みを断るのが苦手なこともあります。あなたの温かさと思いやりは、常に周りに人々を集めます。安定した関係を求め、一度縁を結ぶと長く大切にする義理堅いタイプです。\n\n❤️恋愛スタイル：恋人のために尽くすことを喜びと感じます。安定的で快適な関係を好み、対立を生むよりは譲歩し理解しようと努めます。サプライズよりも日常の小さな配慮で愛を表現します。\n\n💼おすすめの職業：サービス業、看護師、獣医師、幼稚園教諭、人事担当者\n\n⭐成長ポイント：時には他人の頼みを断る勇気が必要です。自分の欲求や感情も大切にし、まず自分自身を大切にすることを学ぶべきです。',
+                zh: '你责任心强，富有奉献精神，是一个会好好照顾身边人的人。你总是散发着正能量，有一种让别人感到安心的魅力。你有很强的利他倾向，从别人的幸福中找到自己的幸福，你可能会觉得很难拒绝别人的请求。你的温暖和体贴总是吸引着人们。你寻求稳定的关系，是一个忠诚的人，会长期珍惜人际关系。\n\n❤️ 恋爱风格：你乐于为伴侣奉献。你更喜欢稳定舒适的关系，并试图让步和理解而不是制造冲突。你通过日常的小善举而不是惊喜来表达爱。\n\n💼 推荐职业：服务业、护士、兽医、幼儿园老师、人力资源经理\n\n⭐ 成长点：有时你需要勇气拒绝别人的请求。你必须学会珍惜自己的需求和情感，并首先照顾好自己。'
+            },
+            features: [
+                { emoji: '🛡️', text: { ko: '강한 책임감', en: 'Strong Responsibility', ja: '強い責任感', zh: '责任心强' } },
+                { emoji: '😊', text: { ko: '긍정 에너지', en: 'Positive Energy', ja: 'ポジティブエネルギー', zh: '正能量' } },
+                { emoji: '💪', text: { ko: '헌신적인 모습', en: 'Devoted Attitude', ja: '献身的な姿', zh: '奉献精神' } },
+                { emoji: '🏡', text: { ko: '편안한 매력', en: 'Comforting Charm', ja: '安らぎの魅力', zh: '令人舒适的魅力' } }
+            ]
+        },
+        'classic': {
+            emoji: '💕',
+            title: { ko: '클래식 에겐녀', en: 'Classic Egen Woman', ja: 'クラシックエゲン女', zh: '经典艾根女' },
+            subtitle: { ko: '완벽한 여자친구', en: 'The Perfect Girlfriend', ja: '完璧な彼女', zh: '完美女友' },
+            description: {
+                ko: '사랑스럽고 배려심 깊은 당신은 주변 사람들에게 늘 기쁨을 줍니다. 감정 표현에 솔직하고, 관계에서의 조화를 가장 중요하게 생각하는 로맨티스트입니다. 아름다운 것을 좋아하고, 기념일이나 특별한 날을 챙기는 것을 즐깁니다. 타인의 감정을 잘 살피고, 분위기를 부드럽게 만드는 능력이 탁월합니다. 당신의 사랑스러운 에너지와 긍정적인 태도는 주변을 밝게 만듭니다. 때로는 감정의 기복이 있지만, 당신의 진심은 늘 통하기 마련입니다.\n\n❤️ 연애 스타일: 로맨틱한 분위기와 달콤한 애정 표현을 즐깁니다. 연인과의 정서적 교감을 매우 중요하게 생각하며, 관계의 안정을 추구합니다. 연인을 위한 이벤트를 준비하는 것을 좋아합니다.\n\n💼 추천 직업: 플로리스트, 웨딩플래너, 파티시에, 뷰티 컨설턴트, 아나운서\n\n⭐ 성장 포인트: 감정적인 결정보다는 때로는 이성적이고 현실적인 판단을 내리는 연습이 필요합니다. 모든 사람을 만족시키려 하기보다 자신의 주관을 지키는 것이 중요합니다.',
+                en: 'Lovely and considerate, you always bring joy to those around you. You are a romantic who is honest with your emotions and values harmony in relationships above all. You appreciate beautiful things and enjoy celebrating anniversaries and special days. You are excellent at reading others\' emotions and softening the atmosphere. Your lovely energy and positive attitude brighten your surroundings. You may have emotional ups and downs, but your sincerity always shines through.\n\n❤️ Love Style: You enjoy a romantic atmosphere and sweet expressions of affection. You place great importance on emotional connection with your partner and seek stability in the relationship. You love planning events for your partner.\n\n💼 Recommended Jobs: Florist, Wedding Planner, Pastry Chef, Beauty Consultant, Announcer\n\n⭐ Growth Point: You need to practice making rational and realistic judgments at times, rather than purely emotional decisions. It\'s important to maintain your own opinions rather than trying to please everyone.',
+                ja: '愛らしく思いやりのあるあなたは、周りの人々にいつも喜びを与えます。感情表現に素直で、関係の調和を最も重要視するロマンチストです。美しいものが好きで、記念日や特別な日を祝うことを楽しんでいます。他人の感情をよく読み取り、雰囲気を和らげる能力が卓越しています。あなたの愛らしいエネルギーとポジティブな態度は、周りを明るくします。感情の起伏があるかもしれませんが、あなたの真心は常に通じます。\n\n❤️恋愛スタイル：ロマンチックな雰囲気と甘い愛情表現を楽しんでいます。恋人との情緒的な交流を非常に重要視し、関係の安定を求めます。恋人のためにイベントを計画するのが好きです。\n\n💼おすすめの職業：フローリスト、ウェディングプランナー、パティシエ、ビューティーコンサルタント、アナウンサー\n\n⭐成長ポイント：感情的な決定よりも、時には理性的で現実的な判断を下す練習が必要です。すべての人を満足させようとするより、自分の主観を守ることが重要です。',
+                zh: '可爱又体贴的你，总是给周围的人带来欢乐。你是一个对情感诚实、将关系和谐置于首位的浪漫主义者。你欣赏美丽的事物，喜欢庆祝纪念日和特殊的日子。你非常擅长解读他人的情感和缓和气氛。你可爱的能量和积极的态度照亮了你的周围。你可能会有情绪波动，但你的真诚总能打动人心。\n\n❤️ 恋爱风格：你享受浪漫的氛围和甜蜜的爱意表达。你非常重视与伴侣的情感联系，并寻求关系的稳定。你喜欢为伴侣策划活动。\n\n💼 推荐职业：花艺师、婚礼策划师、糕点师、美容顾问、播音员\n\n⭐ 成长点：你需要练习在某些时候做出理性和现实的判断，而不是纯粹的情感决定。坚持自己的观点比试图取悦每个人更重要。'
+            },
+            features: [
+                { emoji: '💖', text: { ko: '사랑스러운 에너지', en: 'Lovely Energy', ja: '愛らしいエネルギー', zh: '可爱的能量' } },
+                { emoji: '💌', text: { ko: '깊은 배려심', en: 'Deep Consideration', ja: '深い思いやり', zh: '深切的体贴' } },
+                { emoji: '⚖️', text: { ko: '조화 추구', en: 'Harmony Seeker', ja: '調和を追求', zh: '追求和谐' } },
+                { emoji: '🌹', text: { ko: '로맨티스트', en: 'Romanticist', ja: 'ロマンチスト', zh: '浪漫主义者' } }
+            ]
+        },
+        'maternal': {
+            emoji: '🐻',
+            title: { ko: '모성 에겐녀', en: 'Maternal Egen Woman', ja: '母性エゲン女', zh: '母性艾根女' },
+            subtitle: { ko: '엄마미 폭발하는 언니', en: 'The Big Sister with a Mother\'s Heart', ja: '母性爆発のお姉さん', zh: '母爱爆棚的姐姐' },
+            description: {
+                ko: '따뜻한 포용력으로 사람들을 감싸 안는 당신. 힘든 일이 있을 때 가장 먼저 생각나는 사람이며, 현실적인 조언과 따뜻한 위로를 함께 건넬 줄 압니다. 책임감이 강하고, 주변 사람들을 챙기는 것을 자신의 의무처럼 생각합니다. 당신의 곁에 있으면 어떤 문제든 해결될 것 같은 든든함을 느낄 수 있습니다. 때로는 지나친 오지랖으로 보일 수 있지만, 그것은 당신의 깊은 애정에서 비롯된 것입니다. 강한 생활력과 지혜를 겸비한 당신은 어떤 그룹에서든 중심을 잡아주는 역할을 합니다.\n\n❤️ 연애 스타일: 연인을 보살피고 챙겨주는 것에서 행복을 느낍니다. 안정적이고 성숙한 관계를 이끌어가며, 상대방의 성장을 돕는 든든한 지원군이 되어줍니다.\n\n💼 추천 직업: 교사, 상담사, 프로젝트 매니저, CEO, 요리사\n\n⭐ 성장 포인트: 모든 것을 스스로 해결하려 하기보다 다른 사람에게 의지하고 도움을 요청하는 법을 배울 필요가 있습니다. 자신에게도 따뜻한 위로와 휴식을 선물하세요.',
+                en: 'You embrace people with your warm, inclusive nature. You are the first person people think of when they are in trouble, and you know how to offer both practical advice and warm comfort. You have a strong sense of responsibility and consider it your duty to take care of those around you. Being with you gives a sense of security that any problem can be solved. While it may sometimes seem like over-involvement, it stems from your deep affection. Combining strong life skills and wisdom, you play a central role in any group.\n\n❤️ Love Style: You find happiness in caring for and looking after your partner. You lead a stable and mature relationship, becoming a reliable supporter who helps your partner grow.\n\n💼 Recommended Jobs: Teacher, Counselor, Project Manager, CEO, Chef\n\n⭐ Growth Point: You need to learn to rely on others and ask for help, rather than trying to solve everything yourself. Gift yourself warm comfort and rest as well.',
+                ja: '温かい包容力で人々を包み込むあなた。困難なことがある時に最初に思い浮かぶ人であり、現実的なアドバイスと温かい慰めを同時に提供する方法を知っています。責任感が強く、周りの人々を世話することを自分の義務のように考えています。あなたのそばにいると、どんな問題も解決できそうな安心感を感じることができます。時にはおせっかいに見えるかもしれませんが、それはあなたの深い愛情から来るものです。強い生活力と知恵を兼ね備えたあなたは、どんなグループでも中心的な役割を果たします。\n\n❤️恋愛スタイル：恋人を世話し、面倒を見ることに幸せを感じます。安定的で成熟した関係をリードし、相手の成長を助ける頼もしい支援者になります。\n\n💼おすすめの職業：教師、カウンセラー、プロジェクトマネージャー、CEO、料理人\n\n⭐成長ポイント：すべてを自分で解決しようとするのではなく、他人に頼り、助けを求めることを学ぶ必要があります。自分自身にも温かい慰めと休息をプレゼントしてください。',
+                zh: '你用温暖、包容的胸怀拥抱他人。当人们遇到麻烦时，你是他们第一个想到的人，你知道如何提供实际的建议和温暖的安慰。你有强烈的责任感，认为照顾周围的人是你的责任。和你在一起，会有一种任何问题都能解决的安全感。虽然有时可能看起来管得太多，但这源于你深厚的感情。你兼具强大的生活能力和智慧，在任何团体中都扮演着核心角色。\n\n❤️ 恋爱风格：你在照顾伴侣中找到幸福。你引导一段稳定而成熟的关系，成为帮助伴侣成长的可靠支持者。\n\n💼 推荐职业：教师、顾问、项目经理、首席执行官、厨师\n\n⭐ 成长点：你需要学会依赖他人并请求帮助，而不是试图自己解决所有问题。也请给自己温暖的安慰和休息。'
+            },
+            features: [
+                { emoji: '🫂', text: { ko: '따뜻한 포용력', en: 'Warm Inclusiveness', ja: '温かい包容力', zh: '温暖的包容力' } },
+                { emoji: '🔥', text: { ko: '강한 책임감', en: 'Strong Responsibility', ja: '強い責任感', zh: '强烈的责任感' } },
+                { emoji: '💡', text: { ko: '현실적인 조언', en: 'Practical Advice', ja: '現実的なアドバイス', zh: '实际的建议' } },
+                { emoji: '💎', text: { ko: '강한 생활력', en: 'Strong Vitality', ja: '強い生活力', zh: '强大的生命力' } }
+            ]
+        },
+        'healing': {
+            emoji: '🐨',
+            title: { ko: '힐링 에겐녀', en: 'Healing Egen Woman', ja: 'ヒーリングエゲン女', zh: '治愈系艾根女' },
+            subtitle: { ko: '멘탈 케어 전문가', en: 'The Mental Care Specialist', ja: 'メンタルケアの専門家', zh: '心理疗愈专家' },
+            description: {
+                ko: '차분하고 평온한 기운을 가진 당신. 함께 있는 것만으로도 상대방을 치유하는 능력이 있습니다. 다른 사람의 이야기를 잘 들어주며, 깊은 공감대를 형성합니다. 경쟁보다는 협력을, 화려함보다는 소박함을 선호합니다. 자연을 사랑하고, 혼자만의 시간을 통해 에너지를 충전합니다. 당신의 침착함과 인내심은 복잡한 문제도 차분히 해결하게 만드는 힘이 있습니다. 당신은 갈등 상황에서 훌륭한 중재자 역할을 할 수 있습니다.\n\n❤️ 연애 스타일: 연인에게 편안한 안식처 같은 존재가 되어줍니다. 자극적인 관계보다는 안정적이고 서로에게 힘이 되어주는 관계를 원합니다. 말없이 곁을 지켜주는 것만으로도 큰 위로를 줍니다.\n\n💼 추천 직업: 심리상담사, 요가 강사, 사서, 동화 작가, 원예사\n\n⭐ 성장 포인트: 때로는 자신의 생각과 감정을 더 적극적으로 표현할 필요가 있습니다. 좋은 관계를 위해 갈등을 무조건 피하기보다는, 건강하게 마주하는 법을 배우는 것이 좋습니다.',
+                en: 'You have a calm and peaceful aura. Just being with you has a healing effect on others. You are a great listener and form deep empathetic connections. You prefer cooperation over competition, and simplicity over splendor. You love nature and recharge your energy through alone time. Your calmness and patience are a force that allows you to solve complex problems calmly. You can be an excellent mediator in conflict situations.\n\n❤️ Love Style: You become a comfortable sanctuary for your partner. You desire a stable relationship that supports each other, rather than a stimulating one. Just staying by their side silently provides great comfort.\n\n💼 Recommended Jobs: Psychologist, Yoga Instructor, Librarian, Children\'s Book Author, Gardener\n\n⭐ Growth Point: Sometimes you need to express your thoughts and feelings more actively. It\'s better to learn how to face conflicts healthily rather than avoiding them at all costs for the sake of a good relationship.',
+                ja: '穏やかで平穏なオーラを持つあなた。一緒にいるだけで相手を癒す能力があります。他人の話をよく聞き、深い共感を形成します。競争よりも協力を、華やかさよりも素朴さを好みます。自然を愛し、一人だけの時間を通じてエネルギーを充電します。あなたの冷静さと忍耐力は、複雑な問題も落ち着いて解決させる力があります。あなたは対立状況で優れた仲裁者の役割を果たすことができます。\n\n❤️恋愛スタイル：恋人にとって快適な安息所のような存在になります。刺激的な関係よりも、安定的でお互いに力になる関係を望みます。黙ってそばにいるだけで大きな慰めを与えます。\n\n💼おすすめの職業：心理カウンセラー、ヨガインストラクター、司書、童話作家、園芸家\n\n⭐成長ポイント：時には自分の考えや感情をより積極的に表現する必要があります。良い関係のために無条件に対立を避けるのではなく、健康的に向き合う方法を学ぶのが良いでしょう。',
+                zh: '你有一种平静祥和的气场。仅仅是和你在一起就能治愈他人。你是一个很好的倾听者，能建立深刻的共鸣。你更喜欢合作而不是竞争，更喜欢朴素而不是华丽。你热爱自然，通过独处时间来充电。你的冷静和耐心是一种力量，能让你平静地解决复杂的问题。在冲突情况下，你可以成为一名出色的调解人。\n\n❤️ 恋爱风格：你成为伴侣舒适的避风港。你渴望一种相互支持的稳定关系，而不是刺激的关系。仅仅是默默地陪伴在他们身边就能提供巨大的安慰。\n\n💼 推荐职业：心理学家、瑜伽教练、图书馆员、童书作家、园艺师\n\n⭐ 成长点：有时你需要更积极地表达你的想法和感受。为了维持良好的关系，学会健康地面对冲突比不惜一切代价避免冲突要好。'
+            },
+            features: [
+                { emoji: '🧘‍♀️', text: { ko: '힐링 파워', en: 'Healing Power', ja: 'ヒーリングパワー', zh: '治愈力' } },
+                { emoji: '🎧', text: { ko: '경청의 달인', en: 'Master Listener', ja: '傾聴の達人', zh: '倾听大师' } },
+                { emoji: '🏞️', text: { ko: '평온한 기운', en: 'Peaceful Aura', ja: '平穏なオーラ', zh: '宁静的气场' } },
+                { emoji: '🌊', text: { ko: '깊은 공감', en: 'Deep Empathy', ja: '深い共感', zh: '深度共鸣' } }
+            ]
+        },
+        'alpha': {
+            emoji: '🦁',
+            title: { ko: '알파 테토남', en: 'Alpha Teto Man', ja: 'アルファテト男', zh: '阿尔法特托男' },
+            subtitle: { ko: '타고난 리더', en: 'The Natural-Born Leader', ja: '生まれながらのリーダー', zh: '天生的领袖' },
+            description: {
+                ko: '자신감과 카리스마가 넘치는 당신은 무리를 이끄는 타고난 리더입니다. 목표 지향적이며, 어떤 상황에서도 흔들리지 않는 결단력을 보여줍니다. 경쟁에서 이기는 것을 즐기며, 자신의 능력을 증명하는 데서 큰 성취감을 느낍니다. 때로는 지나치게 독단적으로 보일 수 있지만, 그것은 목표 달성을 위한 강력한 추진력 때문입니다. 당신의 사람들을 지키려는 책임감 또한 매우 강합니다. 당신의 확신에 찬 태도는 주변 사람들에게 신뢰감을 줍니다.\n\n❤️ 연애 스타일: 관계를 주도하고 연인을 리드하는 것을 선호합니다. 연인에게 든든한 버팀목이 되어주며, 함께 성장하고 더 높은 목표를 향해 나아가는 관계를 원합니다. 존경심을 기반으로 한 사랑을 중요하게 생각합니다.\n\n💼 추천 직업: CEO, 정치인, 군인, 감독, 투자자\n\n⭐ 성장 포인트: 때로는 자신의 결정이 틀릴 수도 있다는 것을 인정하고, 다른 사람의 의견에 귀 기울이는 유연함이 필요합니다. 과정의 즐거움도 중요하게 생각하는 법을 배워보세요.',
+                en: 'Full of confidence and charisma, you are a natural-born leader who guides the pack. You are goal-oriented and show unwavering determination in any situation. You enjoy winning in competitions and feel a great sense of accomplishment from proving your abilities. While you may sometimes seem overly authoritarian, it stems from your powerful drive to achieve goals. Your sense of responsibility to protect your people is also very strong. Your confident attitude inspires trust in those around you.\n\n❤️ Love Style: You prefer to take the lead in the relationship and guide your partner. You become a strong pillar of support for your partner and desire a relationship that grows and moves towards higher goals together. You value love based on respect.\n\n💼 Recommended Jobs: CEO, Politician, Soldier, Director, Investor\n\n⭐ Growth Point: You need the flexibility to sometimes admit that your decisions might be wrong and to listen to others\' opinions. Try to learn to value the joy of the process as well.',
+                ja: '自信とカリスマに溢れるあなたは、集団を率いる生まれながらのリーダーです。目標志向的で、どんな状況でも揺るがない決断力を見せます。競争に勝つことを楽しみ、自分の能力を証明することに大きな達成感を感じます。時には過度に独断的に見えるかもしれませんが、それは目標達成のための強力な推進力から来ています。あなたの人々を守るという責任感も非常に強いです。あなたの自信に満ちた態度は、周りの人々に信頼感を与えます。\n\n❤️恋愛スタイル：関係を主導し、恋人をリードすることを好みます。恋人にとって頼もしい支えとなり、共に成長し、より高い目標に向かって進む関係を望みます。尊敬に基づいた愛を重視します。\n\n💼おすすめの職業：CEO、政治家、軍人、監督、投資家\n\n⭐成長ポイント：時には自分の決定が間違っている可能性を認め、他人の意見に耳を傾ける柔軟性が必要です。プロセスの楽しさも大切にすることを学んでみてください。',
+                zh: '充满自信和魅力的你是天生的领袖，能带领团队。你以目标为导向，在任何情况下都表现出坚定的决断力。你喜欢在竞争中获胜，并从证明自己的能力中获得巨大的成就感。虽然你有时可能看起来过于专断，但这源于你实现目标的强大动力。你保护你的人的责任感也非常强。你自信的态度能激发周围人的信任。\n\n❤️ 恋爱风格：你更喜欢在关系中占据主导地位，引导你的伴侣。你成为伴侣坚强的支柱，并渴望一种共同成长、朝着更高目标前进的关系。你重视基于尊重的爱。\n\n💼 推荐职业：首席执行官、政治家、军人、导演、投资者\n\n⭐ 成长点：你需要有灵活性，有时要承认你的决定可能是错的，并倾听他人的意见。试着学会也重视过程的乐趣。'
+            },
+            features: [
+                { emoji: '👑', text: { ko: '압도적 카리스마', en: 'Overwhelming Charisma', ja: '圧倒的なカリスマ', zh: '压倒性的魅力' } },
+                { emoji: '😎', text: { ko: '넘치는 자신감', en: 'Overflowing Confidence', ja: '溢れる自信', zh: '自信爆棚' } },
+                { emoji: '🎯', text: { ko: '강력한 목표의식', en: 'Strong Goal-Orientation', ja: '強力な目標意識', zh: '目标导向性强' } },
+                { emoji: '⚡', text: { ko: '탁월한 결단력', en: 'Excellent Decisiveness', ja: '卓越した決断力', zh: '卓越的决断力' } }
+            ]
+        },
+        'sports': {
+            emoji: '🐅',
+            title: { ko: '스포츠 테토남', en: 'Sports Teto Man', ja: 'スポーツテト男', zh: '运动特托男' },
+            subtitle: { ko: '운동남의 정석', en: 'The Quintessential Athlete', ja: '運動男子の定石', zh: '运动型男的典范' },
+            description: {
+                ko: '넘치는 에너지와 건강한 매력을 가진 당신. 경쟁을 즐기며, 몸으로 부딪히는 활동에서 큰 성취감을 느낍니다. 자기 관리에 철저하고 승부욕이 강합니다. 정정당당한 승부를 중요하게 생각하며, 팀워크를 발휘할 줄 아는 페어플레이어입니다. 말보다는 행동으로 보여주는 것을 선호하며, 솔직하고 직설적인 화법을 구사합니다. 당신의 활기찬 에너지는 주변에 긍정적인 영향을 미칩니다.\n\n❤️ 연애 스타일: 함께 운동하거나 활동적인 데이트를 즐기는 것을 선호합니다. 연인을 지켜주는 든든한 모습을 보여주며, 솔직하고 건강한 관계를 추구합니다. 때로는 섬세한 감정 표현이 서툴 수 있습니다.\n\n💼 추천 직업: 운동선수, 트레이너, 소방관, 경찰, 레저 스포츠 강사\n\n⭐ 성장 포인트: 강한 승부욕이 때로는 관계에 긴장감을 줄 수 있습니다. 이기는 것만이 전부가 아니라는 것을 배우고, 상대방의 감정을 살피는 섬세함을 기를 필요가 있습니다.',
+                en: 'With overflowing energy and a healthy charm, you enjoy competition and feel great satisfaction from physical activities. You are thorough in self-management and have a strong competitive drive. You value fair play and know how to demonstrate teamwork. You prefer to show through actions rather than words and use a frank, direct way of speaking. Your vibrant energy has a positive impact on your surroundings.\n\n❤️ Love Style: You prefer to exercise or have active dates together. You show a reliable side, protecting your partner, and pursue a frank and healthy relationship. You may sometimes be clumsy with delicate emotional expressions.\n\n💼 Recommended Jobs: Athlete, Trainer, Firefighter, Police Officer, Leisure Sports Instructor\n\n⭐ Growth Point: Your strong competitive drive can sometimes create tension in relationships. You need to learn that winning isn\'t everything and develop the delicacy to consider the other person\'s feelings.',
+                ja: '溢れるエネルギーと健康的な魅力を持つあなた。競争を楽しみ、体でぶつかる活動から大きな達成感を得ます。自己管理が徹底しており、勝負欲が強いです。正々堂々とした勝負を重要視し、チームワークを発揮できるフェアプレーヤーです。言葉よりも行動で示すことを好み、率直で直接的な話し方をします。あなたの活気あるエネルギーは、周りに肯定的な影響を与えます。\n\n❤️恋愛スタイル：一緒に運動したり、活動的なデートを楽しむことを好みます。恋人を守る頼もしい姿を見せ、率直で健康的な関係を追求します。時には繊細な感情表現が苦手なことがあります。\n\n💼おすすめの職業：アスリート、トレーナー、消防士、警察官、レジャースポーツインストラクター\n\n⭐成長ポイント：強い勝負欲が、時には関係に緊張感を与えることがあります。勝つことだけが全てではないことを学び、相手の感情を察する繊細さを養う必要があります。',
+                zh: '你精力充沛，富有健康魅力，你喜欢竞争，并从体育活动中获得巨大的满足感。你严于律己，有好胜心。你重视公平竞争，懂得团队合作。你更喜欢用行动而不是言语来表达，说话坦率直接。你充满活力的能量对周围环境产生积极影响。\n\n❤️ 恋爱风格：你更喜欢一起锻炼或进行活跃的约会。你展现出可靠的一面，保护你的伴侣，并追求坦率健康的关系。你有时可能不擅长细腻的情感表达。\n\n💼 推荐职业：运动员、教练、消防员、警察、休闲运动教练\n\n⭐ 成长点：你强烈的好胜心有时会给关系带来紧张。你需要学习胜利并非一切，并培养体察他人感受的细腻。'
+            },
+            features: [
+                { emoji: '🔋', text: { ko: '에너자이저', en: 'Energizer', ja: 'エナジャイザー', zh: '活力充沛' } },
+                { emoji: '🔥', text: { ko: '강한 승부욕', en: 'Strong Competitiveness', ja: '強い勝負欲', zh: '好胜心强' } },
+                { emoji: '💪', text: { ko: '철저한 자기관리', en: 'Thorough Self-Management', ja: '徹底した自己管理', zh: '严于律己' } },
+                { emoji: '🏋️‍♂️', text: { ko: '건강한 매력', en: 'Healthy Charm', ja: '健康的な魅力', zh: '健康的魅力' } }
+            ]
+        },
+        'leader': {
+            emoji: '🦅',
+            title: { ko: '리더 테토남', en: 'Leader Teto Man', ja: 'リーダーテト男', zh: '领袖特托男' },
+            subtitle: { ko: 'CEO 기질', en: 'The CEO Material', ja: 'CEOの気質', zh: 'CEO潜质' },
+            description: {
+                ko: '넓은 시야와 뛰어난 통찰력을 가진 당신은 전략가 타입입니다. 문제의 본질을 꿰뚫어 보고, 가장 효율적인 해결책을 찾아내는 능력이 탁월합니다. 감정에 휩쓸리지 않고 이성적인 판단을 내리며, 장기적인 관점에서 계획을 세웁니다. 당신의 논리정연한 설명은 사람들에게 신뢰를 주며, 자연스럽게 리더의 자리에 오르게 됩니다. 지적 호기심이 강하고, 끊임없이 배우고 성장하려는 욕구가 강합니다.\n\n❤️ 연애 스타일: 감정적인 교류만큼이나 지적인 대화를 중요하게 생각합니다. 연인과 함께 비전을 공유하고, 서로의 성장을 돕는 파트너 관계를 선호합니다. 논리적으로 문제를 해결하려 해서 때로는 차갑게 보일 수 있습니다.\n\n💼 추천 직업: 컨설턴트, 분석가, 변호사, 펀드매니저, 연구원\n\n⭐ 성장 포인트: 논리와 효율성도 중요하지만, 때로는 사람의 감정을 먼저 고려하는 따뜻함이 필요합니다. 완벽한 계획보다 중요한 것은 함께하는 사람들의 마음이라는 것을 기억하세요.',
+                en: 'With a broad perspective and excellent insight, you are a strategist type. You have an outstanding ability to see the essence of a problem and find the most efficient solution. You make rational judgments without being swayed by emotions and create long-term plans. Your logical explanations inspire trust in people, naturally leading you to a leadership position. You have a strong intellectual curiosity and a great desire to constantly learn and grow.\n\n❤️ Love Style: You value intellectual conversation as much as emotional exchange. You prefer a partnership where you share a vision with your partner and help each other grow. You may sometimes seem cold because you try to solve problems logically.\n\n💼 Recommended Jobs: Consultant, Analyst, Lawyer, Fund Manager, Researcher\n\n⭐ Growth Point: While logic and efficiency are important, sometimes warmth that considers people\'s feelings first is needed. Remember that the hearts of the people you are with are more important than a perfect plan.',
+                ja: '広い視野と優れた洞察力を持つあなたは、戦略家タイプです。問題の本質を見抜き、最も効率的な解決策を見つけ出す能力が卓越しています。感情に流されずに理性的な判断を下し、長期的な視点で計画を立てます。あなたの論理整然とした説明は人々に信頼を与え、自然とリーダーの地位に就くことになります。知的好奇心が強く、絶えず学び成長しようとする欲求が強いです。\n\n❤️恋愛スタイル：感情的な交流と同じくらい、知的な対話を重要視します。恋人とビジョンを共有し、お互いの成長を助けるパートナー関係を好みます。論理的に問題を解決しようとするため、時には冷たく見えることがあります。\n\n💼おすすめの職業：コンサルタント、アナリスト、弁護士、ファンドマネージャー、研究員\n\n⭐成長ポイント：論理と効率も重要ですが、時には人々の感情をまず考慮する温かさが必要です。完璧な計画よりも重要なのは、一緒にいる人々の心であることを忘れないでください。',
+                zh: '你拥有广阔的视野和卓越的洞察力，是战略家类型。你有出色的能力，能够看透问题的本质并找到最有效的解决方案。你做出理性的判断，不受情绪影响，并制定长期计划。你合乎逻辑的解释能激发人们的信任，自然而然地让你走上领导岗位。你有很强的求知欲，并有不断学习和成长的强烈愿望。\n\n❤️ 恋爱风格：你像重视情感交流一样重视智力对话。你更喜欢一种与伴侣分享愿景、互相帮助成长的伙伴关系。你有时可能因为试图逻辑地解决问题而显得冷漠。\n\n💼 推荐职业：顾问、分析师、律师、基金经理、研究员\n\n⭐ 成长点：虽然逻辑和效率很重要，但有时也需要首先考虑人们感受的温暖。请记住，与你在一起的人的心比完美的计划更重要。'
+            },
+            features: [
+                { emoji: '🔭', text: { ko: '뛰어난 통찰력', en: 'Excellent Insight', ja: '優れた洞察力', zh: '卓越的洞察力' } },
+                { emoji: '🧠', text: { ko: '전략가 기질', en: 'Strategist Temperament', ja: '戦略家気質', zh: '战略家气质' } },
+                { emoji: '📈', text: { ko: '효율성 중시', en: 'Emphasis on Efficiency', ja: '効率性を重視', zh: '重视效率' } },
+                { emoji: '🗺️', text: { ko: '큰 그림', en: 'The Big Picture', ja: '大局観', zh: '大局观' } }
+            ]
+        },
+        'girlcrush': {
+            emoji: '🐆',
+            title: { ko: '걸크러쉬 테토녀', en: 'Girl Crush Teto Woman', ja: 'ガールクラッシュテト女', zh: '女王范特托女' },
+            subtitle: { ko: '시크 걸의 완성형', en: 'The Definition of Chic', ja: 'シックガールの完成形', zh: '酷女孩的完成型' },
+            description: {
+                ko: "독립적이고 당당한 매력을 가진 당신. 남의 시선에 얽매이지 않고 자신만의 스타일을 추구합니다. 시크하고 도도해 보이지만, 한번 마음을 연 상대에게는 깊은 의리를 보여주는 '츤데레' 기질이 있습니다. 불의를 보면 참지 못하고, 자신의 의견을 솔직하게 표현하는 용기가 있습니다. 당신의 자신감 넘치는 태도와 독보적인 스타일은 많은 사람들의 선망의 대상이 됩니다.\n\n❤️ 연애 스타일: 밀고 당기기를 즐기며, 연인에게도 쉽사리 곁을 내주지 않을 수 있습니다. 하지만 한번 사랑에 빠지면 누구보다 열정적입니다. 서로의 개성을 존중하는 독립적인 관계를 선호합니다.\n\n💼 추천 직업: 패션 디렉터, 연예인, 평론가, 마케터, 스타트업 대표\n\n⭐ 성장 포인트: 당신의 솔직함이 때로는 다른 사람에게 상처를 줄 수 있다는 것을 인지해야 합니다. 부드러운 표현 방식을 익히면, 당신의 매력은 더욱 빛날 것입니다.",
+                en: "With an independent and confident charm, you pursue your own style without being tied to others' opinions. You may seem chic and aloof, but you have a 'tsundere' tendency, showing deep loyalty to those you open up to. You cannot stand injustice and have the courage to express your opinions frankly. Your confident attitude and unique style become the object of envy for many.\n\n❤️ Love Style: You enjoy the push and pull and may not easily let your partner get close. However, once you fall in love, you are more passionate than anyone. You prefer an independent relationship that respects each other's individuality.\n\n💼 Recommended Jobs: Fashion Director, Celebrity, Critic, Marketer, Startup CEO\n\n⭐ Growth Point: You need to recognize that your frankness can sometimes hurt others. If you learn a softer way of expression, your charm will shine even brighter.",
+                ja: "独立的で堂々とした魅力を持つあなた。他人の視線に縛られず、自分だけのスタイルを追求します。シックでクールに見えますが、一度心を開いた相手には深い義理を示す「ツンデレ」気質があります。不正を見ると我慢できず、自分の意見を率直に表現する勇気があります。あなたの自信に満ちた態度とユニークなスタイルは、多くの人々の羨望の的となります。\n\n❤️恋愛スタイル：駆け引きを楽しみ、恋人にも簡単には心を開かないかもしれません。しかし、一度恋に落ちると誰よりも情熱的です。お互いの個性を尊重する独立した関係を好みます。\n\n💼おすすめの職業：ファッションディレクター、芸能人、評論家、マーケター、スタートアップCEO\n\n⭐成長ポイント：あなたの率直さが、時には他人を傷つける可能性があることを認識する必要があります。より柔らかい表現方法を身につければ、あなたの魅力はさらに輝くでしょう。",
+                zh: "你拥有独立和自信的魅力，追求自己的风格，不受他人意见的束缚。你可能看起来很酷很高冷，但你有一种“傲娇”的倾向，对你敞开心扉的人表现出深厚的忠诚。你无法容忍不公，并有勇气坦率地表达自己的意见。你自信的态度和独特的风格成为许多人羡慕的对象。\n\n❤️ 恋爱风格：你喜欢推拉，可能不会轻易让你的伴侣靠近。然而，一旦你坠入爱河，你比任何人都热情。你更喜欢尊重彼此个性的独立关系。\n\n💼 推荐职业：时尚总监、名人、评论家、营销人员、创业公司首席执行官\n\n⭐ 成长点：你需要认识到你的坦率有时会伤害到别人。如果你学会一种更柔和的表达方式，你的魅力将更加闪耀。"
+            },
+            features: [
+                { emoji: '🚶‍♀️', text: { ko: '독보적인 스타일', en: 'Unrivaled Style', ja: '独自のスタイル', zh: '无与伦比的风格' } },
+                { emoji: '👠', text: { ko: '당당한 애티튜드', en: 'Confident Attitude', ja: '堂々とした態度', zh: '自信的态度' } },
+                { emoji: '🖤', text: { ko: '시크한 매력', en: 'Chic Charm', ja: 'シックな魅力', zh: '酷帅的魅力' } },
+                { emoji: '✨', text: { ko: '츤데레 카리스마', en: 'Tsundere Charisma', ja: 'ツンデレカリスマ', zh: '傲娇的魅力' } }
+            ]
+        },
+        'independent': {
+            emoji: '🐺',
+            title: { ko: '독립 테토녀', en: 'Independent Teto Woman', ja: '独立テト女', zh: '独立自主的女性' },
+            subtitle: { ko: '혼자서도 잘하는 여자', en: 'The Woman Who Does It All Alone', ja: '一人でもうまくやる女性', zh: '独立自主的女性' },
+            description: {
+                ko: '자립심이 강하고 자기 주관이 뚜렷한 당신. 혼자만의 시간을 즐길 줄 알며, 어려운 일도 스스로 해결해나가는 능력이 있습니다. 신중하고 책임감이 강하며, 한번 맡은 일은 끝까지 해냅니다. 다른 사람에게 의지하는 것을 선호하지 않으며, 감정적인 동요를 잘 드러내지 않습니다. 당신의 침착하고 어른스러운 모습은 주변에 신뢰감을 줍니다. 때로는 외로움을 느끼기도 하지만, 당신의 강인함은 스스로를 지키는 가장 큰 무기입니다.\n\n❤️ 연애 스타일: 연인에게 의지하기보다 동등한 파트너 관계를 원합니다. 각자의 삶을 존중하며, 함께일 때와 혼자일 때의 균형을 중요하게 생각합니다. 간섭이나 구속을 싫어합니다.\n\n💼 추천 직업: 프리랜서, 개발자, 연구원, 번역가, 1인 기업가\n\n⭐ 성장 포인트: 때로는 다른 사람에게 약한 모습을 보여주고 도움을 요청하는 것이 진정한 강함일 수 있습니다. 혼자 모든 것을 짊어지려 하지 마세요.',
+                en: 'With strong self-reliance and clear opinions, you know how to enjoy your alone time and have the ability to solve difficult problems on your own. You are cautious and responsible, and you see through any task you undertake. You do not prefer to rely on others and do not easily show emotional turmoil. Your calm and mature demeanor inspires trust in those around you. Although you may sometimes feel lonely, your strength is your greatest weapon for self-protection.\n\n❤️ Love Style: You desire an equal partnership rather than relying on your partner. You respect each other\'s lives and value the balance between being together and being alone. You dislike interference or restraint.\n\n💼 Recommended Jobs: Freelancer, Developer, Researcher, Translator, Solopreneur\n\n⭐ Growth Point: Sometimes, showing vulnerability to others and asking for help can be true strength. Don\'t try to carry everything alone.',
+                ja: '自立心が強く、自分の意見がはっきりしているあなた。一人だけの時間を楽しむことができ、難しいことも自分で解決していく能力があります。慎重で責任感が強く、一度引き受けた仕事は最後までやり遂げます。他人に頼ることを好まず、感情的な動揺をあまり表に出しません。あなたの冷静で大人びた姿は、周りに信頼感を与えます。時には孤独を感じることもありますが、あなたの強さは自分自身を守る最大の武器です。\n\n❤️恋愛スタイル：恋人に頼るよりも、対等なパートナー関係を望みます。それぞれの人生を尊重し、一緒にいる時と一人の時のバランスを重要視します。干渉や束縛を嫌います。\n\n💼おすすめの職業：フリーランサー、開発者、研究員、翻訳家、一人起業家\n\n⭐成長ポイント：時には他人に弱い姿を見せ、助けを求めることが真の強さである場合があります。一人ですべてを背負おうとしないでください。',
+                zh: '你自立心强，主见分明，懂得享受独处时光，并有能力自己解决难题。你谨慎负责，一旦接手任务就会坚持到底。你不喜欢依赖他人，也不轻易表露情绪波动。你冷静成熟的风度能激发周围人的信任。虽然你有时可能会感到孤独，但你的力量是你自我保护的最大武器。\n\n❤️ 恋爱风格：你渴望平等的伙伴关系，而不是依赖你的伴侣。你尊重彼此的生活，并重视在一起和独处之间的平衡。你讨厌干涉或束缚。\n\n💼 推荐职业：自由职业者、开发人员、研究员、翻译家、个体企业家\n\n⭐ 成长点：有时，向他人展示脆弱并请求帮助才是真正的力量。不要试图独自承担一切。'
+            },
+            features: [
+                { emoji: '💡', text: { ko: '강한 자립심', en: 'Strong Self-Reliance', ja: '強い自立心', zh: '自立心强' } },
+                { emoji: '⚖️', text: { ko: '신중하고 책임감 있음', en: 'Cautious & Responsible', ja: '慎重で責任感がある', zh: '谨慎负责' } },
+                { emoji: '🧭', text: { ko: '뚜렷한 자기 주관', en: 'Clear Own Opinions', ja: '明確な自己主張', zh: '主见分明' } },
+                { emoji: '🤔', text: { ko: '감정적 동요 적음', en: 'Little Emotional Turmoil', ja: '感情的な動揺が少ない', zh: '情绪波动小' } }
+            ]
+        },
+        'career': {
+            emoji: '🦊',
+            title: { ko: '커리어 테토녀', en: 'Career Teto Woman', ja: 'キャリアテト女', zh: '职业特托女' },
+            subtitle: { ko: '워킹 걸의 교과서', en: 'The Textbook Working Girl', ja: 'ワーキングガールの教科書', zh: '职场女性的教科书' },
+            description: {
+                ko: '일에 대한 열정과 전문성을 가진 당신! 높은 목표 의식과 성취욕이 강하며, 지적이고 세련된 매력을 풍깁니다. 상황 판단이 빠르고 영리하며, 자신의 커리어를 성공적으로 쌓아가는 데 집중합니다. 효율성을 중요하게 생각하고, 시간 낭비를 극도로 싫어합니다. 당신의 프로페셔널한 모습은 많은 사람들에게 귀감이 되지만, 때로는 일 중독처럼 보일 수 있습니다.\n\n❤️ 연애 스타일: 연애도 일처럼 효율적이고 목표 지향적으로 할 수 있습니다. 자신과 같이 성장하고 발전할 수 있는 야망 있는 파트너를 선호합니다. 바쁜 일상 속에서 서로에게 힘이 되어주는 관계를 원합니다.\n\n💼 추천 직업: 전문직(의사, 변호사), 금융 전문가, IT 전문가, 사업가, 교수\n\n⭐ 성장 포인트: 일과 삶의 균형을 찾는 것이 중요합니다. 때로는 비효율적으로 보이는 여유와 휴식이 당신을 더 높은 곳으로 이끌어 줄 수 있다는 것을 기억하세요. 인간적인 관계의 가치도 잊지 마세요.',
+                en: 'With passion and professionalism for your work, you have a high sense of purpose and a strong desire for achievement, exuding an intelligent and sophisticated charm. You are quick to judge situations and clever, focusing on successfully building your career. You value efficiency and extremely dislike wasting time. Your professional demeanor is an example to many, but you may sometimes seem like a workaholic.\n\n❤️ Love Style: You can approach dating as efficiently and goal-oriented as you do work. You prefer an ambitious partner with whom you can grow and develop. You desire a relationship that supports each other amidst a busy daily life.\n\n💼 Recommended Jobs: Professional (Doctor, Lawyer), Financial Expert, IT Specialist, Entrepreneur, Professor\n\n⭐ Growth Point: Finding a work-life balance is important. Remember that seemingly inefficient leisure and rest can lead you to greater heights. Don\'t forget the value of human relationships.',
+                ja: '仕事への情熱と専門性を持つあなた！高い目標意識と達成欲が強く、知的で洗練された魅力を放ちます。状況判断が早く、賢く、自分のキャリアを成功裏に築くことに集中します。効率性を重視し、時間の無駄を極端に嫌います。あなたのプロフェッショナルな姿は多くの人々の模範となりますが、時には仕事中毒のように見えることもあります。\n\n❤️恋愛スタイル：恋愛も仕事のように効率的かつ目標指向的に行うことができます。自分と同じように成長し、発展できる野心的なパートナーを好みます。忙しい日常の中でお互いに力になる関係を望みます。\n\n💼おすすめの職業：専門職（医師、弁護士）、金融専門家、IT専門家、実業家、教授\n\n⭐成長ポイント：仕事と生活のバランスを見つけることが重要です。時には非効率に見える余裕や休息が、あなたをより高い場所へ導いてくれることを忘れないでください。人間関係の価値も忘れないでください。',
+                zh: '你对工作充满热情和专业精神，有很强的目标感和成就欲，散发着知性干练的魅力。你判断情况迅速，聪明伶俐，专注于成功地建立自己的职业生涯。你重视效率，极度讨厌浪费时间。你的专业风范是许多人的榜样，但有时你可能看起来像个工作狂。\n\n❤️ 恋爱风格：你可以像对待工作一样高效、目标明确地对待约会。你更喜欢一个有抱负的伴侣，可以与你共同成长和发展。你渴望在忙碌的日常生活中相互支持的关系。\n\n💼 推荐职业：专业人士（医生、律师）、金融专家、IT专家、企业家、教授\n\n⭐ 成长点：找到工作与生活的平衡很重要。请记住，看似低效的休闲和休息可以带你走向更高的高度。不要忘记人际关系的价值。'
+            },
+            features: [
+                { emoji: '👔', text: { ko: '뛰어난 전문성', en: 'Outstanding Professionalism', ja: '優れた専門性', zh: '卓越的专业精神' } },
+                { emoji: '🎯', text: { ko: '높은 목표의식', en: 'High Goal-Orientation', ja: '高い目標意識', zh: '目标导向性强' } },
+                { emoji: '⚡', text: { ko: '효율성 추구', en: 'Pursuit of Efficiency', ja: '効率性の追求', zh: '追求效率' } },
+                { emoji: '🏆', text: { ko: '강한 성취욕', en: 'Strong Desire for Achievement', ja: '強い達成欲', zh: '成就欲强' } }
+            ]
+        },
+    },
+    compatibilityMatrix: {
+        'egen-male-pure': {'egen-male-pure':85,'egen-male-artist':80,'egen-male-kind':75,'teto-male-alpha':65,'teto-male-sports':60,'teto-male-leader':58,'egen-female-classic':95,'egen-female-maternal':90,'egen-female-healing':88,'teto-female-girlcrush':75,'teto-female-independent':72,'teto-female-career':70},
+        'egen-male-artist': {'egen-male-pure':80,'egen-male-artist':90,'egen-male-kind':78,'teto-male-alpha':70,'teto-male-sports':65,'teto-male-leader':68,'egen-female-classic':85,'egen-female-maternal':80,'egen-female-healing':92,'teto-female-girlcrush':88,'teto-female-independent':85,'teto-female-career':82},
+        'egen-male-kind': {'egen-male-pure':75,'egen-male-artist':78,'egen-male-kind':82,'teto-male-alpha':68,'teto-male-sports':70,'teto-male-leader':72,'egen-female-classic':92,'egen-female-maternal':95,'egen-female-healing':90,'teto-female-girlcrush':78,'teto-female-independent':85,'teto-female-career':88},
+        'teto-male-alpha': {'egen-male-pure':65,'egen-male-artist':70,'egen-male-kind':68,'teto-male-alpha':85,'teto-male-sports':88,'teto-male-leader':90,'egen-female-classic':90,'egen-female-maternal':88,'egen-female-healing':78,'teto-female-girlcrush':95,'teto-female-independent':85,'teto-female-career':92},
+        'teto-male-sports': {'egen-male-pure':60,'egen-male-artist':65,'egen-male-kind':70,'teto-male-alpha':88,'teto-male-sports':82,'teto-male-leader':85,'egen-female-classic':85,'egen-female-maternal':82,'egen-female-healing':75,'teto-female-girlcrush':88,'teto-female-independent':92,'teto-female-career':80},
+        'teto-male-leader': {'egen-male-pure':58,'egen-male-artist':68,'egen-male-kind':72,'teto-male-alpha':90,'teto-male-sports':85,'teto-male-leader':88,'egen-female-classic':88,'egen-female-maternal':90,'egen-female-healing':80,'teto-female-girlcrush':82,'teto-female-independent':78,'teto-female-career':95},
+        'egen-female-classic': {'egen-male-pure':95,'egen-male-artist':85,'egen-male-kind':92,'teto-male-alpha':90,'teto-male-sports':85,'teto-male-leader':88,'egen-female-classic':88,'egen-female-maternal':85,'egen-female-healing':82,'teto-female-girlcrush':70,'teto-female-independent':72,'teto-female-career':75},
+        'egen-female-maternal': {'egen-male-pure':90,'egen-male-artist':80,'egen-male-kind':95,'teto-male-alpha':88,'teto-male-sports':82,'teto-male-leader':90,'egen-female-classic':85,'egen-female-maternal':85,'egen-female-healing':88,'teto-female-girlcrush':68,'teto-female-independent':70,'teto-female-career':85},
+        'egen-female-healing': {'egen-male-pure':88,'egen-male-artist':92,'egen-male-kind':90,'teto-male-alpha':78,'teto-male-sports':75,'teto-male-leader':80,'egen-female-classic':82,'egen-female-maternal':88,'egen-female-healing':90,'teto-female-girlcrush':85,'teto-female-independent':88,'teto-female-career':82},
+        'teto-female-girlcrush': {'egen-male-pure':75,'egen-male-artist':88,'egen-male-kind':78,'teto-male-alpha':95,'teto-male-sports':88,'teto-male-leader':82,'egen-female-classic':70,'egen-female-maternal':68,'egen-female-healing':85,'teto-female-girlcrush':85,'teto-female-independent':90,'teto-female-career':88},
+        'teto-female-independent': {'egen-male-pure':72,'egen-male-artist':85,'egen-male-kind':85,'teto-male-alpha':85,'teto-male-sports':92,'teto-male-leader':78,'egen-female-classic':72,'egen-female-maternal':70,'egen-female-healing':88,'teto-female-girlcrush':90,'teto-female-independent':88,'teto-female-career':85},
+        'teto-female-career': {'egen-male-pure':70,'egen-male-artist':82,'egen-male-kind':88,'teto-male-alpha':92,'teto-male-sports':80,'teto-male-leader':95,'egen-female-classic':75,'egen-female-maternal':85,'egen-female-healing':82,'teto-female-girlcrush':88,'teto-female-independent':85,'teto-female-career':90}
+    },
+    compatibilityDescriptions: {
+        'egen-male-pure_egen-female-classic': {ko: '완벽한 조화! 서로의 감성을 깊이 이해하고 가장 로맨틱한 관계를 만들어갑니다.', en: 'Perfect harmony! You deeply understand each other\'s emotions and create the most romantic relationship.', ja: '完璧な調和！お互いの感性を深く理解し、最もロマンチックな関係を築きます。', zh: '完美的和谐！你们深刻理解彼此的情感，创造最浪漫的关系。'},
+        'teto-male-alpha_teto-female-girlcrush': {ko: '서로의 강함을 인정하는 파워 커플! 함께 세상을 정복할 수 있는 최고의 파트너입니다.', en: 'A power couple that acknowledges each other\'s strength! The best partners to conquer the world together.', ja: 'お互いの強さを認め合うパワーカップル！共に世界を征服できる最高のパートナーです。', zh: '承认彼此力量的权力情侣！是一起征服世界的最佳伙伴。'},
+        'egen-male-kind_teto-female-independent': {ko: '서로 다른 매력으로 균형을 이루는 보완적 관계입니다. 다정함과 독립성이 만나 안정감을 줍니다.', en: 'A complementary relationship balanced by different charms. Kindness meets independence, providing stability.', ja: '異なる魅力でバランスを取る補完的な関係です。優しさと独立性が出会い、安定感を与えます。', zh: '以不同魅力达到平衡的互补关系。善良与独立相遇，带来稳定感。'},
+        'teto-female-career_teto-male-leader': {ko: '비전과 실행력을 모두 갖춘 최강의 비즈니스 파트너이자 연인. 함께라면 못 이룰 것이 없습니다.', en: 'The ultimate business partner and lover with both vision and execution. Nothing is impossible when you are together.', ja: 'ビジョンと実行力を兼ね備えた最強のビジネスパートナーであり恋人。一緒なら成し遂げられないことはありません。', zh: '兼具远见和执行力的终极商业伙伴和爱人。只要在一起，就没有什么是不可能的。'},
+    },
+    lang: {
+        ko: {
+            userInfo_title: '시작하기 전에,', userInfo_subtitle: '정확한 결과 분석을 위해 당신에 대해 알려주세요.',
+            nickname_label: '닉네임 (필수)', gender_label: '성별 (필수)', age_label: '나이대 (선택)', purpose_label: '테스트 목적 (선택)',
+            start_btn: '테스트 시작하기', prev_btn: '이전', loading_title: '결과 분석 중...', loading_text: '당신의 성향을 144개 궁합 매트릭스와 대조하고 있습니다.',
+            result_subtitle: '당신의 에겐/테토 성향 분석 결과입니다.', desc_title: '상세 분석', features_title: '주요 특징',
+            compat_title: '💖 환상의 궁합 / 챌린지 궁합 💔', best_match: 'Best Match', worst_match: 'Challenge Match',
+            advice_title: '맞춤 조언', download_title: '나만의 결과 이미지 공유하기', generate_image_btn: '이미지 생성 및 다운로드',
+            download_btn: '이미지 다운로드', restart_btn: '🔄 다시 테스트하기', history_title: '테스트 기록',
+            history_subtitle: '나의 성향 변화를 확인해보세요.', history_compare_title: '최근 2회 결과 비교', close_btn: '닫기',
+            copied_to_clipboard: '클립보드에 링크가 복사되었어요!',
+            category_emotion: '감정표현 관련 질문', category_decision: '의사결정 관련 질문', category_relationship: '대인관계 관련 질문',
+            category_stress: '스트레스 대처 관련 질문', category_hobby: '취미/관심사 관련 질문', category_love: '연애관계 관련 질문',
+            nickname_placeholder: '닉네임을 입력하세요', gender_error: '성별을 선택해주세요',
+            male_full: '남성', female_full: '여성', none_full: '선택안함',
+            settings_theme: '🎨 테마', settings_mode: '🌙 모드', settings_lang: '🌐 언어', settings_history: '📜 기록',
+            history_btn_text: "테스트 기록 보기", mode_dark: "다크 모드", mode_light: "라이트 모드"
+        },
+        en: {
+            userInfo_title: 'Before we start,', userInfo_subtitle: 'Please tell us about yourself for an accurate analysis.',
+            nickname_label: 'Nickname (Required)', gender_label: 'Gender (Required)', age_label: 'Age Group (Optional)', purpose_label: 'Purpose of Test (Optional)',
+            start_btn: 'Start Test', prev_btn: 'Previous', loading_title: 'Analyzing results...', loading_text: 'Comparing your tendency with 144 compatibility matrices.',
+            result_subtitle: 'Here is your Egen/Teto tendency analysis result.', desc_title: 'Detailed Analysis', features_title: 'Key Features',
+            compat_title: '💖 Best Match / Challenge Match 💔', best_match: 'Best Match', worst_match: 'Challenge Match',
+            advice_title: 'Customized Advice', download_title: 'Share Your Custom Result Image', generate_image_btn: 'Generate & Download Image',
+            download_btn: 'Download Image', restart_btn: '🔄 Test Again', history_title: 'Test History',
+            history_subtitle: 'Check how your tendencies have changed.', history_compare_title: 'Comparison of Last 2 Results', close_btn: 'Close',
+            copied_to_clipboard: 'Link copied to clipboard!',
+            category_emotion: 'Questions about Emotional Expression', category_decision: 'Questions about Decision Making', category_relationship: 'Questions about Interpersonal Skills',
+            category_stress: 'Questions about Stress Coping', category_hobby: 'Questions about Hobbies/Interests', category_love: 'Questions about Romantic Relationships',
+            nickname_placeholder: 'Enter your nickname', gender_error: 'Please select your gender',
+            male_full: 'Male', female_full: 'Female', none_full: 'Prefer not to say',
+            settings_theme: '🎨 Theme', settings_mode: '🌙 Mode', settings_lang: '🌐 Language', settings_history: '📜 History',
+            history_btn_text: "View Test History", mode_dark: "Dark Mode", mode_light: "Light Mode"
+        },
+        ja: {
+            userInfo_title: '始める前に,', userInfo_subtitle: '正確な結果分析のために、あなたについて教えてください。',
+            nickname_label: 'ニックネーム（必須）', gender_label: '性別（必須）', age_label: '年齢層（任意）', purpose_label: 'テストの目的（任意）',
+            start_btn: 'テストを始める', prev_btn: '戻る', loading_title: '結果を分析中...', loading_text: 'あなたの性向を144個の相性マトリックスと照合しています。',
+            result_subtitle: 'あなたのエゲン/テト性向分析結果です。', desc_title: '詳細分析', features_title: '主な特徴',
+            compat_title: '💖 最高の相性 / チャレンジ相性 💔', best_match: 'ベストマッチ', worst_match: 'チャレンジマッチ',
+            advice_title: 'カスタムアドバイス', download_title: '自分だけの結果画像を共有', generate_image_btn: '画像を生成してダウンロード',
+            download_btn: '画像をダウンロード', restart_btn: '🔄 もう一度テストする', history_title: 'テスト履歴',
+            history_subtitle: 'あなたの性向の変化を確認してみてください。', history_compare_title: '最近2回の結果比較', close_btn: '閉じる',
+            copied_to_clipboard: 'リンクがクリップボードにコピーされました！',
+            category_emotion: '感情表現に関する質問', category_decision: '意思決定に関する質問', category_relationship: '対人関係に関する質問',
+            category_stress: 'ストレス対処に関する質問', category_hobby: '趣味・関心事に関する質問', category_love: '恋愛関係に関する質問',
+            nickname_placeholder: 'ニックネームを入力してください', gender_error: '性別を選択してください',
+            male_full: '男性', female_full: '女性', none_full: '選択しない',
+            settings_theme: '🎨 テーマ', settings_mode: '🌙 モード', settings_lang: '🌐 言語', settings_history: '📜 履歴',
+            history_btn_text: "テスト履歴を見る", mode_dark: "ダークモード", mode_light: "ライトモード"
+        },
+        zh: {
+            userInfo_title: '在开始之前,', userInfo_subtitle: '为了准确分析，请告诉我们关于您的一些信息。',
+            nickname_label: '昵称（必填）', gender_label: '性别（必填）', age_label: '年龄段（可选）', purpose_label: '测试目的（可选）',
+            start_btn: '开始测试', prev_btn: '上一步', loading_title: '正在分析结果...', loading_text: '正在将您的倾向与144个配对矩阵进行比较。',
+            result_subtitle: '这是您的艾根/特托倾向分析结果。', desc_title: '详细分析', features_title: '主要特点',
+            compat_title: '💖 最佳配对 / 挑战配对 💔', best_match: '最佳配对', worst_match: '挑战配对',
+            advice_title: '定制建议', download_title: '分享您的专属结果图', generate_image_btn: '生成并下载图片',
+            download_btn: '下载图片', restart_btn: '🔄 重新测试', history_title: '测试历史',
+            history_subtitle: '查看您倾向的变化。', history_compare_title: '最近两次结果比较', close_btn: '关闭',
+            copied_to_clipboard: '链接已复制到剪贴板！',
+            category_emotion: '关于情感表达的问题', category_decision: '关于决策的问题', category_relationship: '关于人际关系的问题',
+            category_stress: '关于压力应对的问题', category_hobby: '关于兴趣爱好的问题', category_love: '关于恋爱关系的问题',
+            nickname_placeholder: '请输入您的昵称', gender_error: '请选择您的性别',
+            male_full: '男性', female_full: '女性', none_full: '不愿透露',
+            settings_theme: '🎨 主题', settings_mode: '🌙 模式', settings_lang: '🌐 语言', settings_history: '📜 历史',
+            history_btn_text: "查看测试历史", mode_dark: "暗黑模式", mode_light: "明亮模式"
+        }
+    },
+    ageAdvices: {
+        '10s': { ko: '10대에게: 지금의 감정과 호기심을 소중히 여기세요. 다양한 경험을 통해 자신을 알아가는 것이 가장 중요해요!', en: 'For teens: Cherish your current emotions and curiosity. The most important thing is to get to know yourself through various experiences!', ja: '10代の方へ：今の感情と好奇心を大切にしてください。様々な経験を通じて自分自身を知ることが最も重要です！', zh: '给青少年：珍惜你现在的情感和好奇心。通过各种经历来了解自己是最重要的！' },
+        '20s': { ko: '20대에게: 수많은 가능성 앞에서 당신의 성향은 강력한 나침반이 될 거예요. 도전을 두려워 말고, 때로는 넘어져도 괜찮아요.', en: 'For 20s: Your tendencies will be a powerful compass in the face of countless possibilities. Don\'t be afraid to challenge yourself, and it\'s okay to fall sometimes.', ja: '20代の方へ：数多くの可能性の前で、あなたの性向は強力な羅針盤になります。挑戦を恐れず、時には転んでも大丈夫です。', zh: '给20多岁的人：在无数可能性面前，你的倾向将成为一个强大的指南针。不要害怕挑战自己，有时候摔倒也没关系。' },
+        '30s': { ko: '30대에게: 자신의 성향을 이해하고 활용하여 커리어와 인간관계에서 더 깊은 만족을 찾을 수 있습니다. 자신만의 속도를 존중하세요.', en: 'For 30s: By understanding and utilizing your tendencies, you can find deeper satisfaction in your career and relationships. Respect your own pace.', ja: '30代の方へ：自分の性向を理解し活用することで、キャリアや人間関係でより深い満足感を見出すことができます。自分自身のペースを尊重してください。', zh: '给30多岁的人：通过理解和利用你的倾向，你可以在事业和人际关系中找到更深的满足感。尊重你自己的节奏。' },
+        '40s+': { ko: '40대+에게: 당신이 쌓아온 경험과 타고난 성향이 어우러져 지혜가 됩니다. 이제는 자신과 타인을 더 너그럽게 포용할 시간입니다.', en: 'For 40s+: Your accumulated experience and innate tendencies combine to form wisdom. It is now time to embrace yourself and others more generously.', ja: '40代以上の方へ：あなたが積み重ねてきた経験と生まれ持った性向が合わさり、知恵となります。今こそ、自分自身と他人をより寛大に受け入れる時です。', zh: '给40岁以上的人：你积累的经验和天生的倾向相结合，形成了智慧。现在是时候更宽容地拥抱自己和他人了。' },
+        none: { ko: '당신의 성향은 모든 연령대에서 빛을 발할 수 있는 고유한 장점입니다. 자신을 믿고 나아가세요!', en: 'Your tendency is a unique strength that can shine at any age. Believe in yourself and move forward!', ja: 'あなたの性向は、あらゆる年齢層で輝くことができるユニークな長所です。自分を信じて前進してください！', zh: '你的倾向是一种独特的优势，可以在任何年龄段闪耀。相信自己，勇往直前！' }
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    let currentUserInfo = { nickname: '', gender: null, age: null, purpose: null };
+    let currentQuestionIndex = 0;
+    let userAnswers = [];
+    let currentLang = 'ko';
+    let currentTheme = 'light-pink';
+    let isDarkMode = false;
+    let testHistory = [];
+    let chartInstances = {};
+
+    const $ = (selector) => document.querySelector(selector);
+    const $$ = (selector) => document.querySelectorAll(selector);
+
+    const app = $('#app');
+    const screens = {
+        userInfo: $('#user-info-screen'),
+        test: $('#test-screen'),
+        loading: $('#loading-screen'),
+        result: $('#result-screen'),
+        history: $('#history-screen')
+    };
+    
+    const header = {
+        container: $('.header'),
+        counter: $('#question-counter'),
+        progressContainer: $('#progress-container'),
+        settingsBtn: $('#settings-btn')
+    };
+
+    const settingsModal = {
+        container: $('#settings-modal'),
+        content: $('.settings-content'),
+        themeOptions: $('#theme-options'),
+        darkModeToggle: $('#dark-mode-toggle'),
+        langSwitcher: $('#lang-switcher'),
+        historyBtn: $('#history-btn'),
+        closeBtn: $('#close-settings-btn')
+    };
+
+    const userInfoForm = {
+        nickname: $('#nickname'),
+        genderGroup: $('#gender-group'),
+        ageGroup: $('#age-group'),
+        purposeGroup: $('#purpose-group'),
+        startBtn: $('#start-test-btn')
+    };
+
+    const testUI = {
+        progressBar: $('#progress-bar'),
+        questionCategory: $('#question-category'),
+        questionText: $('#question-text'),
+        answerOptions: $('#answer-options'),
+        prevBtn: $('#prev-btn')
+    };
+    
+    const resultUI = {
+        userTitle: $('#result-user-title'),
+        emoji: $('#result-emoji'),
+        title: $('#result-title'),
+        subtitle: $('#result-subtitle-text'),
+        scoreChartCanvas: $('#score-chart'),
+        description: $('#result-description'),
+        featureTags: $('#feature-tags'),
+        bestMatch: { type: $('#best-match-type'), score: $('#best-match-score') },
+        worstMatch: { type: $('#worst-match-type'), score: $('#worst-match-score') },
+        compatDesc: $('#compat-desc'),
+        ageAdvice: $('#age-advice'),
+        generateImageBtn: $('#generate-image-btn'),
+        shareButtons: {
+            kakao: $('#kakao-share-btn'),
+            twitter: $('#twitter-share-btn'),
+            copy: $('#copy-link-btn')
+        },
+        restartBtn: $('#restart-btn')
+    };
+
+    const historyUI = {
+        list: $('#history-list'),
+        chartCanvas: $('#history-chart'),
+        closeBtn: $('#back-to-main-btn')
+    };
+    
+    function calculateResult(answers, userGender) {
+        let totalEgen = 0;
+        let totalTeto = 0;
+        const subtypeScores = {};
+        Object.keys(DATA.results).forEach(st => subtypeScores[st] = 0);
+
+        answers.forEach(answer => {
+            if (answer) {
+                totalEgen += answer.e || 0;
+                totalTeto += answer.t || 0;
+                if (answer.st && subtypeScores.hasOwnProperty(answer.st)) {
+                    subtypeScores[answer.st] += Math.max(answer.e || 0, answer.t || 0) + 1;
+                }
+            }
+        });
+
+        const isEgen = totalEgen >= totalTeto;
+        let candidates = [];
+        const gender = userGender || 'none';
+        if (gender === 'male') {
+            candidates = isEgen ? ['pure', 'artist', 'kind'] : ['alpha', 'sports', 'leader'];
+        } else if (gender === 'female') {
+            candidates = isEgen ? ['classic', 'maternal', 'healing'] : ['girlcrush', 'independent', 'career'];
+        } else {
+            candidates = isEgen ? ['pure', 'artist', 'kind', 'classic', 'maternal', 'healing'] : ['alpha', 'sports', 'leader', 'girlcrush', 'independent', 'career'];
+        }
+        
+        let maxScore = -1;
+        let finalSubtype = candidates[0] || 'pure';
+        candidates.forEach(subtype => {
+            const score = subtypeScores[subtype] || 0;
+            if (score > maxScore) {
+                maxScore = score;
+                finalSubtype = subtype;
+            }
+        });
+
+        const totalScore = totalEgen + totalTeto;
+        return {
+            totalEgen,
+            totalTeto,
+            finalSubtype,
+            userFullType: `${isEgen ? 'egen' : 'teto'}-${gender}-${finalSubtype}`,
+            percentage: {
+                egen: totalScore > 0 ? Math.round((totalEgen / totalScore) * 100) : 50,
+                teto: totalScore > 0 ? Math.round((totalTeto / totalScore) * 100) : 50
+            }
+        };
+    }
+
+    function getCompatibilityInfo(userFullType) {
+        const typeKeyParts = userFullType.split('-');
+        let baseTypeKey = `${typeKeyParts[0]}-${typeKeyParts[1]}-${typeKeyParts[2]}`;
+        
+        if (typeKeyParts[1] === 'none') {
+            baseTypeKey = ['pure', 'artist', 'kind', 'alpha', 'sports', 'leader'].includes(typeKeyParts[2]) 
+                ? `${typeKeyParts[0]}-male-${typeKeyParts[2]}`
+                : `${typeKeyParts[0]}-female-${typeKeyParts[2]}`;
+        }
+        
+        const scores = DATA.compatibilityMatrix[baseTypeKey];
+        
+        if (!scores) {
+            console.warn(`No compatibility data for ${baseTypeKey}`);
+            return { bestMatch: { type: 'N/A', score: 0 }, worstMatch: { type: 'N/A', score: 100 } };
+        }
+        
+        let bestMatch = { type: '', score: -1 };
+        let worstMatch = { type: '', score: 101 };
+
+        const oppositeGender = currentUserInfo.gender === 'male' ? 'female' : 'male';
+
+        for (const [type, score] of Object.entries(scores)) {
+            if (type !== baseTypeKey) {
+                const isComparable = (currentUserInfo.gender === 'none') || type.includes(`-${oppositeGender}-`);
+                if (isComparable) {
+                    if (score > bestMatch.score) bestMatch = { type, score };
+                    if (score < worstMatch.score) worstMatch = { type, score };
+                }
+            }
+        }
+        return { bestMatch, worstMatch };
+    }
+
+    function getCssVar(varName) {
+        return getComputedStyle(document.body).getPropertyValue(varName).trim();
+    }
+    
+    async function generateResultImage(userInfo, result, compat) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1080;
+        canvas.height = 1080;
+        const ctx = canvas.getContext('2d');
+        const c = getCssVar;
+        
+        const gradient = ctx.createLinearGradient(0, 0, 1080, 1080);
+        gradient.addColorStop(0, c('--c-bg'));
+        gradient.addColorStop(1, c('--c-surface'));
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, 1080, 1080);
+
+        ctx.fillStyle = c('--c-text');
+        ctx.font = `bold 60px ${c('--font-title')}`;
+        ctx.textAlign = 'center';
+        ctx.fillText(`${userInfo.nickname}'s Result`, 540, 120);
+
+        ctx.font = '200px sans-serif';
+        ctx.fillText(DATA.results[result.finalSubtype].emoji, 540, 320);
+
+        ctx.fillStyle = c('--c-primary');
+        ctx.font = `bold 80px ${c('--font-title')}`;
+        ctx.fillText(DATA.results[result.finalSubtype].title[currentLang], 540, 450);
+        
+        ctx.fillStyle = c('--c-text-light');
+        ctx.font = `40px ${c('--font-main')}`;
+        ctx.fillText(DATA.results[result.finalSubtype].subtitle[currentLang], 540, 510);
+        
+        const chartCanvas = document.createElement('canvas');
+        chartCanvas.width = 300; chartCanvas.height = 300;
+        new Chart(chartCanvas.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: [`Egen ${result.percentage.egen}%`, `Teto ${result.percentage.teto}%`],
+                datasets: [{
+                    data: [result.percentage.egen, result.percentage.teto],
+                    backgroundColor: [c('--c-primary'), c('--c-accent')],
+                    borderColor: c('--c-surface'),
+                    borderWidth: 10,
+                    borderRadius: 10
+                }]
+            },
+            options: { responsive: false, animation: { duration: 0 }, plugins: { legend: { display: false } }, cutout: '70%' }
+        });
+        
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        
+        ctx.drawImage(chartCanvas, 390, 550, 300, 300);
+
+        ctx.fillStyle = c('--c-text');
+        ctx.textAlign = 'left';
+        ctx.font = `bold 36px ${c('--font-main')}`;
+        
+        const bestTypeKey = compat.bestMatch.type;
+        const bestSubtype = bestTypeKey ? bestTypeKey.split('-')[2] : 'N/A';
+        const bestTypeName = bestSubtype !== 'N/A' ? DATA.results[bestSubtype].title[currentLang] : 'N/A';
+        ctx.fillText(`Best: ${bestTypeName}`, 100, 950);
+        
+        ctx.fillStyle = '#2ecc71';
+        ctx.textAlign = 'right';
+        ctx.fillText(`${compat.bestMatch.score}`, 500, 950);
+        
+        ctx.fillStyle = c('--c-text');
+        ctx.textAlign = 'left';
+        const worstTypeKey = compat.worstMatch.type;
+        const worstSubtype = worstTypeKey ? worstTypeKey.split('-')[2] : 'N/A';
+        const worstTypeName = worstSubtype !== 'N/A' ? DATA.results[worstSubtype].title[currentLang] : 'N/A';
+        ctx.fillText(`Challenge: ${worstTypeName}`, 100, 1010);
+        
+        ctx.fillStyle = '#e74c3c';
+        ctx.textAlign = 'right';
+        ctx.fillText(`${compat.worstMatch.score}`, 500, 1010);
+        
+        const qrCanvas = document.createElement('canvas');
+        const urlToEncode = `${window.location.origin}${window.location.pathname}`;
+        await QRCode.toCanvas(qrCanvas, urlToEncode, { width: 150, margin: 1, color: { dark: c('--c-text'), light: '#0000' } });
+        ctx.drawImage(qrCanvas, 880, 880, 150, 150);
+        
+        ctx.fillStyle = c('--c-text');
+        ctx.font = `24px ${c('--font-main')}`;
+        ctx.textAlign = 'center';
+        ctx.fillText('Test Again!', 955, 1050);
+
+        return canvas.toDataURL('image/png');
+    }
+    
+    function updateHeader(screenName) {
+        if (screenName === 'test') {
+            header.progressContainer.classList.remove('hidden');
+            header.settingsBtn.classList.remove('hidden');
+            header.counter.style.display = 'block';
+        } else if (screenName === 'result' || screenName === 'history') {
+            header.progressContainer.classList.add('hidden');
+            header.counter.style.display = 'none';
+            header.settingsBtn.classList.remove('hidden');
+        }
+        else {
+            header.progressContainer.classList.add('hidden');
+            header.counter.style.display = 'none';
+            header.settingsBtn.classList.add('hidden');
+        }
+    }
+    
+    function switchScreen(screenName) {
+        const currentActive = $('.screen.active');
+        if (currentActive) {
+            currentActive.classList.remove('active');
+            currentActive.classList.add('inactive');
+        }
+        const nextScreen = screens[screenName];
+        nextScreen.classList.remove('hidden', 'inactive');
+        nextScreen.classList.add('active');
+        updateHeader(screenName);
+        app.scrollTop = 0;
+    }
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('egenTetoLang', lang);
+        document.documentElement.lang = lang;
+        
+        settingsModal.langSwitcher.querySelectorAll('button').forEach(btn => {
+            btn.classList.toggle('selected', btn.dataset.langCode === lang);
+        });
+
+        $$('[data-lang]').forEach(el => {
+            const key = el.dataset.lang;
+            if (DATA.lang[lang] && DATA.lang[lang][key]) {
+                el.textContent = DATA.lang[lang][key];
+            }
+        });
+        if (screens.test.classList.contains('active')) renderQuestion();
+        updateDarkModeButtonText();
+    }
+    
+    function updateDarkModeButtonText(){
+        const key = document.body.classList.contains('dark-mode') ? 'mode_light' : 'mode_dark';
+        settingsModal.darkModeToggle.textContent = DATA.lang[currentLang][key];
+    }
+
+    function setTheme(theme, isDark) {
+        document.body.dataset.theme = theme;
+        document.body.classList.toggle('dark-mode', isDark);
+        updateDarkModeButtonText();
+        
+        settingsModal.themeOptions.querySelectorAll('.theme-option').forEach(opt => {
+            opt.classList.toggle('selected', opt.dataset.theme === theme);
+        });
+
+        localStorage.setItem('egenTetoTheme', theme);
+        localStorage.setItem('egenTetoDarkMode', isDark);
+    }
+
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.remove();
+        }, 2000);
+    }
+    
+    function validateUserInfo() {
+        const isNicknameValid = userInfoForm.nickname.value.trim().length > 0;
+        const isGenderValid = !!currentUserInfo.gender;
+        userInfoForm.startBtn.disabled = !(isNicknameValid && isGenderValid);
+    }
+
+    function renderQuestion() {
+        if (currentQuestionIndex >= DATA.questions.length) {
+            finishTest();
+            return;
+        }
+
+        testUI.prevBtn.disabled = currentQuestionIndex === 0;
+        const progress = ((currentQuestionIndex + 1) / DATA.questions.length) * 100;
+        testUI.progressBar.style.width = `${progress}%`;
+        header.counter.textContent = `Q${currentQuestionIndex + 1} / ${DATA.questions.length}`;
+
+        const qData = DATA.questions[currentQuestionIndex];
+        testUI.questionCategory.textContent = DATA.lang[currentLang][`category_${qData.category}`] || '';
+        testUI.questionText.textContent = qData.q[currentLang];
+        
+        testUI.answerOptions.innerHTML = '';
+        qData.a.forEach((answer, index) => {
+            const button = document.createElement('button');
+            button.className = 'answer-btn';
+            button.textContent = answer.text[currentLang];
+            button.onclick = () => handleAnswerSelect(index);
+            testUI.answerOptions.appendChild(button);
+        });
+    }
+
+    function handleAnswerSelect(answerIndex) {
+        const qData = DATA.questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = qData.a[answerIndex].s;
+        
+        const selectedBtn = testUI.answerOptions.children[answerIndex];
+        selectedBtn.classList.add('selected');
+
+        setTimeout(() => {
+            currentQuestionIndex++;
+            renderQuestion();
+        }, 300);
+    }
+
+    function finishTest() {
+        switchScreen('loading');
+        setTimeout(() => {
+            const result = calculateResult(userAnswers, currentUserInfo.gender);
+            const compat = getCompatibilityInfo(result.userFullType);
+
+            const resultData = {
+                userInfo: { ...currentUserInfo },
+                result,
+                compat,
+                date: new Date().toISOString()
+            };
+
+            testHistory.unshift(resultData);
+            if (testHistory.length > 5) testHistory.pop();
+            localStorage.setItem('egenTetoHistory', JSON.stringify(testHistory));
+
+            renderResult(resultData);
+            switchScreen('result');
+        }, 2000);
+    }
+    
+    function renderResult(data) {
+        const { userInfo, result, compat } = data;
+        const resultTypeData = DATA.results[result.finalSubtype];
+        
+        resultUI.userTitle.textContent = `${userInfo.nickname}${currentLang === 'ko' ? '님' : ''}의 결과`;
+        if (currentLang === 'en') resultUI.userTitle.textContent = `${userInfo.nickname}'s Result`;
+
+        resultUI.emoji.textContent = resultTypeData.emoji;
+        resultUI.title.textContent = resultTypeData.title[currentLang];
+        resultUI.subtitle.textContent = resultTypeData.subtitle[currentLang];
+        resultUI.description.textContent = resultTypeData.description[currentLang];
+
+        resultUI.featureTags.innerHTML = '';
+        resultTypeData.features.forEach(f => {
+            const tag = document.createElement('span');
+            tag.className = 'tag';
+            tag.textContent = `${f.emoji} ${f.text[currentLang]}`;
+            resultUI.featureTags.appendChild(tag);
+        });
+
+        if (chartInstances.score) chartInstances.score.destroy();
+        chartInstances.score = new Chart(resultUI.scoreChartCanvas, {
+            type: 'doughnut',
+            data: {
+                labels: [`Egen ${result.percentage.egen}%`, `Teto ${result.percentage.teto}%`],
+                datasets: [{
+                    data: [result.percentage.egen, result.percentage.teto],
+                    backgroundColor: [getCssVar('--c-primary'), getCssVar('--c-accent')],
+                    borderColor: getCssVar('--c-bg'),
+                    borderWidth: 8,
+                    borderRadius: 5,
+                }]
+            },
+            options: { plugins: { legend: { display: false } }, cutout: '70%' }
+        });
+        
+        const bestTypeKey = compat.bestMatch.type;
+        const worstTypeKey = compat.worstMatch.type;
+        
+        const bestSubtype = bestTypeKey ? bestTypeKey.split('-')[2] : null;
+        const worstSubtype = worstTypeKey ? worstTypeKey.split('-')[2] : null;
+        
+        resultUI.bestMatch.type.textContent = bestSubtype ? DATA.results[bestSubtype].title[currentLang] : 'N/A';
+        resultUI.bestMatch.score.textContent = compat.bestMatch.score;
+        resultUI.worstMatch.type.textContent = worstSubtype ? DATA.results[worstSubtype].title[currentLang] : 'N/A';
+        resultUI.worstMatch.score.textContent = compat.worstMatch.score;
+        
+        const baseUserTypeForDesc = result.userFullType.substring(0, result.userFullType.lastIndexOf('-'));
+        const compatDescKey = `${baseUserTypeForDesc}_${compat.bestMatch.type}`;
+        resultUI.compatDesc.textContent = (DATA.compatibilityDescriptions[compatDescKey] && DATA.compatibilityDescriptions[compatDescKey][currentLang]) || '';
+
+        resultUI.ageAdvice.textContent = DATA.ageAdvices[userInfo.age || 'none'][currentLang];
+    }
+
+    function renderHistory() {
+        historyUI.list.innerHTML = '';
+        const historyContainer = $('.history-compare');
+
+        if (testHistory.length === 0) {
+            historyUI.list.innerHTML = `<p>${DATA.lang[currentLang].history_subtitle.replace('확인해보세요.', '없습니다.')}</p>`;
+            historyContainer.style.display = 'none';
+            return;
+        }
+
+        historyContainer.style.display = 'block';
+
+        testHistory.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'history-item';
+            const typeData = DATA.results[item.result.finalSubtype];
+            div.innerHTML = `
+                <div class="history-info">
+                    <span class="type">${typeData.emoji} ${typeData.title[currentLang]}</span>
+                    <span class="date">${new Date(item.date).toLocaleString(currentLang)}</span>
+                </div>
+                <div class="scores">E:${item.result.percentage.egen}% T:${item.result.percentage.teto}%</div>
+            `;
+            historyUI.list.appendChild(div);
+        });
+
+        if (testHistory.length >= 2) {
+            historyUI.chartCanvas.parentElement.style.display = 'block';
+            if(chartInstances.history) chartInstances.history.destroy();
+            chartInstances.history = new Chart(historyUI.chartCanvas, {
+                type: 'line',
+                data: {
+                    labels: ['Previous', 'Latest'],
+                    datasets: [
+                        { label: 'Egen', data: [testHistory[1].result.percentage.egen, testHistory[0].result.percentage.egen], borderColor: getCssVar('--c-primary'), tension: 0.1 },
+                        { label: 'Teto', data: [testHistory[1].result.percentage.teto, testHistory[0].result.percentage.teto], borderColor: getCssVar('--c-accent'), tension: 0.1 }
+                    ]
+                }
+            });
+        } else {
+            historyUI.chartCanvas.parentElement.style.display = 'none';
+        }
+    }
+    
+    function init() {
+        const savedUserInfo = JSON.parse(localStorage.getItem('egenTetoUserInfo'));
+        if (savedUserInfo) {
+            currentUserInfo = savedUserInfo;
+            userInfoForm.nickname.value = currentUserInfo.nickname;
+            if(currentUserInfo.gender) $(`#gender-group .choice-btn[data-value="${currentUserInfo.gender}"]`)?.classList.add('selected');
+            if(currentUserInfo.age) $(`#age-group .choice-btn[data-value="${currentUserInfo.age}"]`)?.classList.add('selected');
+            if(currentUserInfo.purpose) $(`#purpose-group .choice-btn[data-value="${currentUserInfo.purpose}"]`)?.classList.add('selected');
+            validateUserInfo();
+        }
+        testHistory = JSON.parse(localStorage.getItem('egenTetoHistory')) || [];
+        const savedLang = localStorage.getItem('egenTetoLang') || navigator.language.split('-')[0];
+        const savedTheme = localStorage.getItem('egenTetoTheme') || 'light-pink';
+        isDarkMode = localStorage.getItem('egenTetoDarkMode') === 'true';
+        setTheme(savedTheme, isDarkMode);
+        setLanguage(DATA.lang[savedLang] ? savedLang : 'ko');
+        
+        // Event Listeners
+        userInfoForm.nickname.oninput = () => {
+            currentUserInfo.nickname = userInfoForm.nickname.value.trim();
+            validateUserInfo();
+        };
+
+        ['gender', 'age', 'purpose'].forEach(groupName => {
+            const groupEl = $(`#${groupName}-group`);
+            groupEl.addEventListener('click', (e) => {
+                const button = e.target.closest('.choice-btn');
+                if (button) {
+                    currentUserInfo[groupName] = button.dataset.value;
+                    groupEl.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+                    button.classList.add('selected');
+                    if (groupName === 'gender') validateUserInfo();
+                }
+            });
+        });
+
+        userInfoForm.startBtn.onclick = () => {
+            if (userInfoForm.startBtn.disabled) return;
+            localStorage.setItem('egenTetoUserInfo', JSON.stringify(currentUserInfo));
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            switchScreen('test');
+            renderQuestion();
+        };
+        
+        testUI.prevBtn.onclick = () => {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                userAnswers.pop();
+                renderQuestion();
+            }
+        };
+
+        resultUI.restartBtn.onclick = () => switchScreen('userInfo');
+
+        header.settingsBtn.onclick = () => settingsModal.container.classList.add('visible');
+        settingsModal.closeBtn.onclick = () => settingsModal.container.classList.remove('visible');
+        settingsModal.container.onclick = (e) => {
+            if (e.target === settingsModal.container) {
+                settingsModal.container.classList.remove('visible');
+            }
+        };
+
+        settingsModal.langSwitcher.addEventListener('click', (e) => {
+            const button = e.target.closest('.lang-btn');
+            if(button && button.dataset.langCode) {
+                setLanguage(button.dataset.langCode);
+            }
+        });
+        
+        settingsModal.themeOptions.addEventListener('click', (e) => {
+            const themeOption = e.target.closest('.theme-option');
+            if(themeOption && themeOption.dataset.theme) {
+                currentTheme = themeOption.dataset.theme;
+                setTheme(currentTheme, isDarkMode);
+            }
+        });
+        
+        settingsModal.darkModeToggle.onclick = () => {
+            isDarkMode = !isDarkMode;
+            setTheme(currentTheme, isDarkMode);
+        };
+
+        settingsModal.historyBtn.onclick = () => {
+            settingsModal.container.classList.remove('visible');
+            renderHistory();
+            switchScreen('history');
+        };
+        
+        historyUI.closeBtn.onclick = () => {
+            const lastResult = testHistory[0];
+            if (lastResult) {
+                renderResult(lastResult);
+                switchScreen('result');
+            } else {
+                switchScreen('userInfo');
+            }
+        };
+
+        resultUI.generateImageBtn.onclick = async () => {
+            const originalText = resultUI.generateImageBtn.textContent;
+            resultUI.generateImageBtn.disabled = true;
+            resultUI.generateImageBtn.textContent = '...';
+            
+            const lastResult = testHistory[0];
+            const dataUrl = await generateResultImage(lastResult.userInfo, lastResult.result, lastResult.compat);
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = `egen_teto_result_${lastResult.userInfo.nickname}.png`;
+            link.click();
+            
+            resultUI.generateImageBtn.disabled = false;
+            resultUI.generateImageBtn.textContent = originalText;
+        };
+        
+        resultUI.shareButtons.twitter.onclick = () => {
+            const lastResult = testHistory[0];
+            const resultTypeData = DATA.results[lastResult.result.finalSubtype];
+            const shareUrl = `${window.location.origin}${window.location.pathname}?result=${lastResult.result.finalSubtype}`;
+            const shareTitle = `[${resultTypeData.title[currentLang]}] - 나의 에겐/테토 성향은?`;
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle)}&url=${encodeURIComponent(shareUrl)}`);
+        };
+        resultUI.shareButtons.copy.onclick = () => {
+            const shareUrl = `${window.location.origin}${window.location.pathname}?result=${testHistory[0].result.finalSubtype}`;
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                showToast(DATA.lang[currentLang].copied_to_clipboard);
+            });
+        };
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const resultIdFromUrl = urlParams.get('result');
+        if (resultIdFromUrl && testHistory.length > 0) {
+            renderResult(testHistory[0]);
+            switchScreen('result');
+        } else {
+            switchScreen('userInfo');
+        }
+    }
+    
+    init();
+});
+</script>
+</body>
+</html>
