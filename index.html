@@ -7,13 +7,15 @@
     <meta name="description" content="나의 에겐/테토 성향과 숨겨진 궁합을 알아보세요! 144가지 조합의 정밀 분석과 나만의 결과 이미지까지.">
     <meta property="og:title" content="에겐/테토 성향 테스트 (최종 완성본)">
     <meta property="og:description" content="144가지 조합의 정밀 분석과 나만의 결과 이미지까지.">
-    <meta property="og:image" content="https://gpt-4-turbo-advanced.github.io/EgenTeto-Advanced-Test/og-image.jpg">
+    <meta property="og:image" content="https://gpt-4-turbo-advanced.github.io/EgenTeto-Advanced-Test/og-image.png">
     <meta property="og:url" content="https://gpt-4-turbo-advanced.github.io/EgenTeto-Advanced-Test/">
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎭</text></svg>">
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <!-- ⚠️ Chart.js Datalabels 플러그인 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.1.0"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap');
@@ -26,8 +28,6 @@
             --border-radius-lg: 24px;
             --transition-speed: 0.3s;
         }
-
-        /* THEME SYSTEM */
         body, body[data-theme='light-pink'] {
             --c-primary: #FFB6C1; --c-secondary: #E6E6FA;
             --c-accent: #1E90FF; --c-accent-light: #e8f4ff;
@@ -41,20 +41,6 @@
             --c-bg: #22223b; --c-surface: #2b2d42;
             --c-text: #edf2f4; --c-text-light: #adb5bd;
             --c-border: #4a4e69;
-        }
-        body[data-theme='mint-choco'] {
-            --c-primary: #66D2B3; --c-secondary: #4A2E2C;
-            --c-accent: #FFE8D6; --c-accent-light: #e0f2e9;
-            --c-bg: #F0FFF9; --c-surface: #FFFFFF;
-            --c-text: #4A2E2C; --c-text-light: #8C6A67;
-            --c-border: #B4E1D1;
-        }
-        body[data-theme='tangerine'] {
-            --c-primary: #FF7F50; --c-secondary: #FFF5E1;
-            --c-accent: #4682B4; --c-accent-light: #e8f4ff;
-            --c-bg: #FFF8F0; --c-surface: #FFFFFF;
-            --c-text: #593A27; --c-text-light: #9C7C68;
-            --c-border: #FFE4B5;
         }
         body.dark-mode {
             --c-primary: #5865f2; --c-secondary: #4f545c;
@@ -105,47 +91,25 @@
         .screen.active { animation: fadeIn 0.4s forwards; z-index: 10; }
         .screen.inactive { animation: fadeOut 0.4s forwards; }
         
-        /* HEADER CONTROLS */
-        .header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 1rem 1.5rem;
-            z-index: 100;
-        }
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 36px;
-        }
+        .header { position: absolute; top: 0; left: 0; width: 100%; padding: 1rem 1.5rem; z-index: 100; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; height: 36px; }
         #question-counter { font-size: 0.9rem; color: var(--c-text-light); font-weight: 500;}
-        #settings-btn {
-            background: transparent; border: none; font-size: 1.5rem; cursor: pointer; color: var(--c-text-light);
-        }
+        #settings-btn { background: transparent; border: none; font-size: 1.5rem; cursor: pointer; color: var(--c-text-light); }
         #progress-container { width: 100%; background: var(--c-border); border-radius: 20px; height: 10px; overflow: hidden; margin-top: 0.5rem; }
         #progress-container.hidden { display: none; }
         #progress-bar { width: 0%; height: 100%; background: var(--c-primary); border-radius: 20px; transition: width 0.4s ease; }
-
-        /* SETTINGS MODAL */
+        
         #settings-modal {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1001;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 1001;
             display: flex; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none;
-            transition: opacity var(--transition-speed);
+            opacity: 0; pointer-events: none; transition: opacity var(--transition-speed);
         }
         #settings-modal.visible { opacity: 1; pointer-events: auto; }
         .settings-content {
-            background: var(--c-surface);
-            padding: 2rem; border-radius: var(--border-radius-lg);
-            width: 90%; max-width: 400px;
-            box-shadow: 0 5px 20px var(--shadow-dark);
-            transform: scale(0.95);
-            transition: transform var(--transition-speed);
+            background: var(--c-surface); padding: 2rem; border-radius: var(--border-radius-lg);
+            width: 90%; max-width: 400px; box-shadow: 0 5px 20px var(--shadow-dark);
+            transform: scale(0.95); transition: transform var(--transition-speed);
         }
         #settings-modal.visible .settings-content { transform: scale(1); }
         .settings-section { margin-bottom: 1.5rem; text-align: left;}
@@ -159,8 +123,7 @@
         h1 { font-size: 2.2rem; color: var(--c-primary); margin-bottom: 0.5rem; }
         p { font-size: 1rem; line-height: 1.6; color: var(--c-text-light); }
         .main-btn {
-            font-family: var(--font-title);
-            background: linear-gradient(45deg, var(--c-primary), var(--c-accent));
+            font-family: var(--font-title); background: linear-gradient(45deg, var(--c-primary), var(--c-accent));
             color: white; border: none; border-radius: 50px;
             padding: 0.9rem 2rem; font-size: 1.2rem; cursor: pointer;
             margin-top: 1.5rem; transition: all var(--transition-speed);
@@ -171,7 +134,6 @@
         .main-btn:disabled { background: var(--c-border); color: var(--c-text-light); cursor: not-allowed; box-shadow: none; transform: none;}
         .main-btn.secondary { background: transparent; border: 1px solid var(--c-primary); color: var(--c-primary); box-shadow: none; }
         
-        /* SCREENS */
         #user-info-screen { justify-content: center; gap: 1.2rem; padding-top: 4rem;}
         .form-group { width: 100%; text-align: left; }
         .form-group label { display: block; font-weight: 500; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--c-text-light); }
@@ -199,10 +161,7 @@
             transition: all var(--transition-speed);
         }
         .answer-btn:hover { border-color: var(--c-primary); transform: translateX(5px); }
-        .answer-btn.selected {
-            border-color: var(--c-primary); background: var(--c-accent-light);
-            animation: highlight 0.3s ease;
-        }
+        .answer-btn.selected { border-color: var(--c-primary); background: var(--c-accent-light); animation: highlight 0.3s ease; }
         @keyframes highlight { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
         .test-footer { display: flex; justify-content: flex-start; width: 100%; margin-top: 1.5rem; }
         .nav-btn { padding: 0.7rem 1.5rem; background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 10px; font-weight: 500; cursor: pointer; }
@@ -216,39 +175,38 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         
+        /* ⚠️ RESULT SCREEN LAYOUT REVISED */
         #result-screen { padding-bottom: 2rem; justify-content: flex-start; padding-top: 4rem; }
-        #result-header { width: 100%; margin-bottom: 1rem; }
-        #result-user-title { font-size: 1.8rem; margin: 0; }
-        .result-card { background: var(--c-bg); border-radius: var(--border-radius-md); padding: 1.5rem; margin-bottom: 1rem; }
-        #result-summary { display: flex; align-items: center; gap: 1.5rem; }
-        
-        /* Result Image Style */
+        .result-main-visual {
+            background: var(--c-bg);
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
         #result-image-container {
-            width: 100px;
-            height: 100px;
+            width: 180px;
+            height: 180px;
             border-radius: 50%;
             overflow: hidden;
-            background: var(--c-bg);
-            border: 4px solid var(--c-primary);
-            flex-shrink: 0;
-            box-shadow: 0 4px 10px var(--shadow-light);
+            border: 5px solid var(--c-surface);
+            box-shadow: 0 5px 15px var(--shadow-dark);
+            margin-bottom: 1rem;
         }
-        #result-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        #result-info { text-align: left; flex-grow: 1; }
-        #result-title { font-family: var(--font-title); font-size: 1.3rem; color: var(--c-text); margin: 0; }
-        #score-chart-container { width: 100%; max-width: 150px; margin: 1rem auto; }
+        #result-image { width: 100%; height: 100%; object-fit: cover; }
+        #result-title { font-size: 2rem; color: var(--c-primary); }
+        #result-subtitle-text { font-size: 1.1rem; }
+        #score-chart-container { width: 100%; max-width: 200px; margin: 1rem auto; }
+        
         #result-description { font-size: 0.95rem; text-align: left; margin-bottom: 1.5rem; white-space: pre-wrap; }
         .result-section { margin-bottom: 1.5rem; }
-        .result-section h3 { font-family: var(--font-title); font-size: 1.1rem; color: var(--c-primary); margin-bottom: 0.75rem; text-align: left; border-left: 4px solid var(--c-accent); padding-left: 0.5rem; }
+        .result-section h3 { font-family: var(--font-title); font-size: 1.2rem; color: var(--c-primary); margin-bottom: 0.75rem; text-align: left; border-left: 4px solid var(--c-accent); padding-left: 0.5rem; }
         #feature-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-        .tag { background: var(--c-accent-light); color: var(--c-accent); padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.85rem; font-weight: 500; }
+        .tag { background: var(--c-bg); padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.85rem; font-weight: 500; border: 1px solid var(--c-border); }
         #compatibility-section { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .compat-card { background: var(--c-surface); padding: 1rem; border-radius: var(--border-radius-md); box-shadow: 0 2px 8px var(--shadow-light); }
+        .compat-card { background: var(--c-bg); padding: 1rem; border-radius: var(--border-radius-md); }
         .compat-card h4 { font-size: 1rem; }
         .compat-card .type-name { font-size: 0.9rem; color: var(--c-text-light); }
         .compat-card .score { font-family: var(--font-title); font-size: 1.8rem; }
@@ -258,8 +216,10 @@
         .result-actions { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; }
         .result-actions .main-btn, .result-actions .main-btn.secondary { width: 100%; }
         #share-buttons { display: flex; justify-content: center; gap: 1rem; }
-        .share-btn { width: 50px; height: 50px; border-radius: 50%; border: none; cursor: pointer; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
+        .share-btn { width: 50px; height: 50px; border-radius: 50%; border: none; cursor: pointer; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; background-color: var(--c-border); color: var(--c-text-light); }
         .share-btn:hover { transform: scale(1.1); }
+        #kakao-share-btn { background-color: #FEE500; color: #3A1D1D; }
+        #twitter-share-btn { background-color: #1DA1F2; color: white; }
         
         #history-screen { justify-content: flex-start; padding-top: 4rem; }
         #history-list { width: 100%; display: flex; flex-direction: column; gap: 1rem; }
@@ -272,8 +232,8 @@
         @media (max-width: 500px) {
             body { background: var(--c-surface); }
             #app { border-radius: 0; max-height: none; height: 100vh; box-shadow: none; }
-            .screen { padding-top: 5rem; }
-            #user-info-screen, #history-screen, #result-screen { padding-top: 4rem; }
+            .screen { padding-top: 6rem; }
+            #user-info-screen, #history-screen, #result-screen { padding-top: 2rem; }
         }
 
         .toast {
@@ -395,20 +355,18 @@
                 <h1 id="result-user-title"></h1>
                 <p data-lang="result_subtitle">당신의 에겐/테토 성향 분석 결과입니다.</p>
             </div>
-            <div class="result-card">
-                <div id="result-summary">
-                    <div id="result-image-container">
-                        <img id="result-image" alt="결과 캐릭터 이미지">
-                    </div>
-                    <div id="result-info">
-                        <h2 id="result-title"></h2>
-                        <p id="result-subtitle-text"></p>
-                    </div>
+
+            <div class="result-main-visual">
+                <div id="result-image-container">
+                    <img id="result-image" alt="결과 캐릭터 이미지">
                 </div>
+                <h2 id="result-title"></h2>
+                <p id="result-subtitle-text"></p>
                 <div id="score-chart-container">
                     <canvas id="score-chart"></canvas>
                 </div>
             </div>
+
             <div class="result-section">
                 <h3 data-lang="features_title">주요 특징</h3>
                 <div id="feature-tags"></div>
@@ -440,9 +398,9 @@
             <div class="result-actions">
                 <button id="generate-image-btn" class="main-btn" data-lang="generate_image_btn">이미지 생성 및 다운로드</button>
                 <div id="share-buttons">
-                    <button class="share-btn" id="kakao-share-btn" style="background-color: #FEE500;" title="카카오톡 공유">💬</button>
-                    <button class="share-btn" id="twitter-share-btn" style="background-color: #1DA1F2; color:white;" title="트위터 공유">🐦</button>
-                    <button class="share-btn" id="copy-link-btn" style="background-color: #7f8c8d; color:white;" title="링크 복사">🔗</button>
+                    <button class="share-btn" id="kakao-share-btn" title="카카오톡 공유">💬</button>
+                    <button class="share-btn" id="twitter-share-btn" title="트위터 공유">🐦</button>
+                    <button class="share-btn" id="copy-link-btn" title="링크 복사">🔗</button>
                 </div>
                 <button id="restart-btn" class="main-btn secondary" data-lang="restart_btn">🔄 다시 테스트하기</button>
             </div>
