@@ -917,59 +917,41 @@ document.addEventListener('DOMContentLoaded', () => {
     async function generateResultImage(userInfo, result, compat) {
         const canvas = document.createElement('canvas');
         canvas.width = 1080;
-        canvas.height = 1350; // 세로 길이 증가
+        canvas.height = 1200;
         const ctx = canvas.getContext('2d');
         const c = getCssVar;
         
-        // 배경 - 그라디언트
-        const bgGradient = ctx.createLinearGradient(0, 0, 0, 1350);
-        bgGradient.addColorStop(0, '#667eea');
-        bgGradient.addColorStop(1, '#764ba2');
-        ctx.fillStyle = bgGradient;
-        ctx.fillRect(0, 0, 1080, 1350);
+        // 배경 제거 - 흰색 단색 배경
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, 1080, 1200);
         
-        // 메인 카드 배경
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
-        ctx.shadowBlur = 30;
-        ctx.shadowOffsetY = 15;
-        roundRect(ctx, 60, 80, 960, 1190, 30);
-        ctx.fill();
-        ctx.shadowColor = 'transparent';
-        ctx.shadowBlur = 0;
-        ctx.shadowOffsetY = 0;
-        
-        // 상단 헤더 영역
-        const headerGradient = ctx.createLinearGradient(0, 80, 0, 280);
-        headerGradient.addColorStop(0, c('--c-primary'));
-        headerGradient.addColorStop(1, c('--c-accent'));
-        ctx.fillStyle = headerGradient;
-        roundRect(ctx, 60, 80, 960, 200, 30, true, false);
-        ctx.fill();
+        // 상단 헤더 영역 - 단색
+        ctx.fillStyle = '#6c5ce7';
+        ctx.fillRect(0, 0, 1080, 200);
         
         // 타이틀 텍스트
         ctx.fillStyle = 'white';
         ctx.font = `bold 48px ${c('--font-title')}`;
         ctx.textAlign = 'center';
-        ctx.fillText('EGEN/TETO 성향 테스트', 540, 140);
+        ctx.fillText('EGEN/TETO 성향 테스트', 540, 80);
         
         ctx.font = `32px ${c('--font-main')}`;
-        ctx.fillText(`${userInfo.nickname}님의 결과`, 540, 200);
+        ctx.fillText(`${userInfo.nickname}님의 결과`, 540, 130);
         
-        // 캐릭터 이미지/이모지 영역
+        // 캐릭터 이미지 영역 - 이모지 대신 실제 이미지 사용
         const resultTypeData = DATA.results[result.finalSubtype];
         
         // 이미지 배경 원
         ctx.fillStyle = 'white';
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
-        ctx.shadowBlur = 20;
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.1)';
+        ctx.shadowBlur = 10;
         ctx.beginPath();
-        ctx.arc(540, 400, 120, 0, Math.PI * 2);
+        ctx.arc(540, 320, 80, 0, Math.PI * 2);
         ctx.fill();
         ctx.shadowColor = 'transparent';
         ctx.shadowBlur = 0;
         
-        // 캐릭터 이미지 로드 시도
+        // 캐릭터 이미지 로드
         const img = new Image();
         img.crossOrigin = "anonymous";
         
@@ -983,121 +965,123 @@ document.addEventListener('DOMContentLoaded', () => {
             const loadedImg = await imagePromise;
             ctx.save();
             ctx.beginPath();
-            ctx.arc(540, 400, 110, 0, Math.PI * 2);
+            ctx.arc(540, 320, 75, 0, Math.PI * 2);
             ctx.clip();
-            ctx.drawImage(loadedImg, 430, 290, 220, 220);
+            ctx.drawImage(loadedImg, 465, 245, 150, 150);
             ctx.restore();
         } catch (e) {
-            ctx.font = '180px sans-serif';
-            ctx.fillStyle = c('--c-primary');
+            // 이미지 로드 실패시 이모지 대신 텍스트 표시
+            ctx.font = '60px sans-serif';
+            ctx.fillStyle = '#6c5ce7';
             ctx.textAlign = 'center';
-            ctx.fillText(resultTypeData.emoji, 540, 450);
+            ctx.fillText('이미지 없음', 540, 330);
         }
         
         // 결과 타이틀
-        ctx.fillStyle = '#2c3e50';
-        ctx.font = `bold 64px ${c('--font-title')}`;
+        ctx.fillStyle = '#2d3436';
+        ctx.font = `bold 56px ${c('--font-title')}`;
         ctx.textAlign = 'center';
-        ctx.fillText(resultTypeData.title[currentLang], 540, 580);
+        ctx.fillText(resultTypeData.title[currentLang], 540, 450);
         
         // 서브타이틀
-        ctx.fillStyle = '#7f8c8d';
-        ctx.font = `36px ${c('--font-main')}`;
-        ctx.fillText(resultTypeData.subtitle[currentLang], 540, 630);
+        ctx.fillStyle = '#636e72';
+        ctx.font = `32px ${c('--font-main')}`;
+        ctx.fillText(resultTypeData.subtitle[currentLang], 540, 490);
         
-        // 점수 영역 배경
+        // 점수 영역 - 위치 조정
         ctx.fillStyle = '#f8f9fa';
-        roundRect(ctx, 120, 680, 840, 180, 20);
-        ctx.fill();
+        ctx.fillRect(120, 530, 840, 140);
         
-        // 점수 바 그리기
-        const egenWidth = (result.percentage.egen / 100) * 400;
-        const tetoWidth = (result.percentage.teto / 100) * 400;
-        
-        // Egen 점수 바
-        ctx.fillStyle = c('--c-primary');
-        roundRect(ctx, 180, 720, egenWidth, 40, 20);
-        ctx.fill();
-        
-        // Teto 점수 바
-        ctx.fillStyle = c('--c-accent');
-        roundRect(ctx, 180, 780, tetoWidth, 40, 20);
-        ctx.fill();
-        
-        // 점수 텍스트
-        ctx.fillStyle = '#2c3e50';
-        ctx.font = `bold 32px ${c('--font-main')}`;
+        // 에겐 점수 라벨과 바
+        ctx.fillStyle = '#2d3436';
+        ctx.font = `bold 28px ${c('--font-main')}`;
         ctx.textAlign = 'left';
-        ctx.fillText('EGEN', 180, 710);
-        ctx.fillText('TETO', 180, 770);
+        ctx.fillText('EGEN', 150, 565);
         
+        // 에겐 점수 퍼센트
         ctx.textAlign = 'right';
-        ctx.fillText(`${result.percentage.egen}%`, 580, 710);
-        ctx.fillText(`${result.percentage.teto}%`, 580, 770);
+        ctx.fillText(`${result.percentage.egen}%`, 910, 565);
+        
+        // 에겐 점수 바
+        const egenWidth = (result.percentage.egen / 100) * 720;
+        ctx.fillStyle = '#fd79a8';
+        ctx.fillRect(150, 575, egenWidth, 25);
+        
+        // 테토 점수 라벨과 바
+        ctx.fillStyle = '#2d3436';
+        ctx.textAlign = 'left';
+        ctx.fillText('TETO', 150, 615);
+        
+        // 테토 점수 퍼센트
+        ctx.textAlign = 'right';
+        ctx.fillText(`${result.percentage.teto}%`, 910, 615);
+        
+        // 테토 점수 바
+        const tetoWidth = (result.percentage.teto / 100) * 720;
+        ctx.fillStyle = '#74b9ff';
+        ctx.fillRect(150, 625, tetoWidth, 25);
         
         // 궁합 정보 영역
         ctx.fillStyle = '#e8f5e8';
-        roundRect(ctx, 120, 900, 400, 150, 20);
-        ctx.fill();
+        ctx.fillRect(80, 720, 400, 150);
         
         ctx.fillStyle = '#ffe8e8';
-        roundRect(ctx, 560, 900, 400, 150, 20);
-        ctx.fill();
+        ctx.fillRect(520, 720, 400, 150);
         
-        // 최고 궁합
-        ctx.fillStyle = '#27ae60';
-        ctx.font = `bold 28px ${c('--font-main')}`;
+        // 환상의 궁합 (BEST MATCH 대신)
+        ctx.fillStyle = '#00b894';
+        ctx.font = `bold 24px ${c('--font-main')}`;
         ctx.textAlign = 'center';
-        ctx.fillText('💖 BEST MATCH', 320, 930);
+        ctx.fillText('💖 환상의 궁합', 280, 750);
         
         const bestTypeKey = compat.bestMatch.type;
         const bestSubtype = bestTypeKey ? bestTypeKey.split('-')[2] : 'N/A';
         const bestTypeName = bestSubtype !== 'N/A' ? DATA.results[bestSubtype].title[currentLang] : 'N/A';
         
-        ctx.fillStyle = '#2c3e50';
-        ctx.font = `24px ${c('--font-main')}`;
-        ctx.fillText(bestTypeName, 320, 965);
+        ctx.fillStyle = '#2d3436';
+        ctx.font = `22px ${c('--font-main')}`;
+        ctx.fillText(bestTypeName, 280, 785);
         
-        ctx.fillStyle = '#27ae60';
-        ctx.font = `bold 32px ${c('--font-main')}`;
-        ctx.fillText(`${compat.bestMatch.score}점`, 320, 1005);
-        
-        // 도전 궁합
-        ctx.fillStyle = '#e74c3c';
+        ctx.fillStyle = '#00b894';
         ctx.font = `bold 28px ${c('--font-main')}`;
-        ctx.fillText('💔 CHALLENGE', 760, 930);
+        ctx.fillText(`${compat.bestMatch.score}점`, 280, 820);
+        
+        // 최악의 궁합 (CHALLENGE 대신)
+        ctx.fillStyle = '#e17055';
+        ctx.font = `bold 24px ${c('--font-main')}`;
+        ctx.fillText('💔 최악의 궁합', 720, 750);
         
         const worstTypeKey = compat.worstMatch.type;
         const worstSubtype = worstTypeKey ? worstTypeKey.split('-')[2] : 'N/A';
         const worstTypeName = worstSubtype !== 'N/A' ? DATA.results[worstSubtype].title[currentLang] : 'N/A';
         
-        ctx.fillStyle = '#2c3e50';
-        ctx.font = `24px ${c('--font-main')}`;
-        ctx.fillText(worstTypeName, 760, 965);
+        ctx.fillStyle = '#2d3436';
+        ctx.font = `22px ${c('--font-main')}`;
+        ctx.fillText(worstTypeName, 720, 785);
         
-        ctx.fillStyle = '#e74c3c';
-        ctx.font = `bold 32px ${c('--font-main')}`;
-        ctx.fillText(`${compat.worstMatch.score}점`, 760, 1005);
+        ctx.fillStyle = '#e17055';
+        ctx.font = `bold 28px ${c('--font-main')}`;
+        ctx.fillText(`${compat.worstMatch.score}점`, 720, 820);
         
-        // 하단 푸터
+        // 하단 안내 텍스트
         ctx.fillStyle = '#95a5a6';
         ctx.font = `24px ${c('--font-main')}`;
         ctx.textAlign = 'center';
-        ctx.fillText('자세한 결과는 웹사이트에서 확인하세요!', 540, 1150);
+        ctx.fillText('자세한 결과는 웹사이트에서 확인하세요!', 540, 950);
         
-        // QR 코드 (우하단 작게)
+        // QR 코드 (우하단)
         if (window.QRCode) {
             const qrCanvas = document.createElement('canvas');
             const urlToEncode = `${window.location.origin}${window.location.pathname}`;
             await QRCode.toCanvas(qrCanvas, urlToEncode, { 
                 width: 100, 
                 margin: 1, 
-                color: { dark: '#34495e', light: '#ffffff00' } 
+                color: { dark: '#2d3436', light: '#ffffff00' } 
             });
             
             ctx.fillStyle = 'white';
-            ctx.fillRect(850, 1180, 120, 120);
-            ctx.drawImage(qrCanvas, 860, 1190, 100, 100);
+            ctx.fillRect(900, 1000, 120, 120);
+            ctx.drawImage(qrCanvas, 910, 1010, 100, 100);
         }
         
         return canvas.toDataURL('image/png');
